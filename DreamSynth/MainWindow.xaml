@@ -1,0 +1,173 @@
+﻿<!-- Определение окна с классом MainWindow, используемое для основного интерфейса приложения DreamSynth -->
+<Window x:Class="DreamSynth.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        Title="DreamSynth" Height="550" Width="1000">
+
+    <!-- Основная сетка, задающая разметку для элементов интерфейса -->
+    <Grid Margin="2.5">
+
+        <!-- Определение двух колонок с равной шириной -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Первая колонка, содержащая элементы для настройки осцилляторов -->
+        <StackPanel Grid.Column="0" Margin="2.5">
+
+            <!-- Осциллятор №1 -->
+            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,5">
+                <StackPanel>
+                    <TextBlock Text="Осциллятор №1" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                    <!-- Выбор типа волны -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Волна: "/>
+                        <ComboBox Name="WaveType1ComboBox" SelectedIndex="0">
+                            <ComboBoxItem Content="Sine"/>
+                            <ComboBoxItem Content="Square"/>
+                            <ComboBoxItem Content="Triangle"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Регулятор частоты -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Частота:"/>
+                        <Slider Name="Frequency1Slider" Minimum="20" Maximum="2000" Value="440" Width="200" TickFrequency="20" IsSnapToTickEnabled="True"/>
+                        <TextBlock Name="Frequency1TextBlock" Text="440"/>
+                    </StackPanel>
+
+                    <!-- Регулятор амплитуды -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Амплитуда:"/>
+                        <Slider Name="Amplitude1Slider" Minimum="0" Maximum="1" Value="0.5" Width="200" TickFrequency="0.1" IsSnapToTickEnabled="True"/>
+                        <TextBlock Name="Amplitude1TextBlock" Text="0.5"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Осциллятор №2 -->
+            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,5">
+                <StackPanel>
+                    <TextBlock Text="Осциллятор №2" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                    <!-- Выбор типа волны -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Волна: "/>
+                        <ComboBox Name="WaveType2ComboBox" SelectedIndex="0">
+                            <ComboBoxItem Content="Sine"/>
+                            <ComboBoxItem Content="Square"/>
+                            <ComboBoxItem Content="Triangle"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Регулятор частоты -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Частота:"/>
+                        <Slider Name="Frequency2Slider" Minimum="20" Maximum="2000" Value="440" Width="200" TickFrequency="20" IsSnapToTickEnabled="True"/>
+                        <TextBlock Name="Frequency2TextBlock" Text="440"/>
+                    </StackPanel>
+
+                    <!-- Регулятор амплитуды -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Амплитуда:"/>
+                        <Slider Name="Amplitude2Slider" Minimum="0" Maximum="1" Value="0.5" Width="200" TickFrequency="0.1" IsSnapToTickEnabled="True"/>
+                        <TextBlock Name="Amplitude2TextBlock" Text="0.5"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Осциллятор №3 -->
+            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,5">
+                <StackPanel>
+                    <TextBlock Text="Осциллятор №3" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                    <!-- Выбор типа волны -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Волна: "/>
+                        <ComboBox Name="WaveType3ComboBox" SelectedIndex="0">
+                            <ComboBoxItem Content="Sine"/>
+                            <ComboBoxItem Content="Square"/>
+                            <ComboBoxItem Content="Triangle"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Регулятор частоты -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Частота:"/>
+                        <Slider Name="Frequency3Slider" Minimum="20" Maximum="2000" Value="440" Width="200" TickFrequency="20" IsSnapToTickEnabled="True"/>
+                        <TextBlock Name="Frequency3TextBlock" Text="440"/>
+                    </StackPanel>
+
+                    <!-- Регулятор амплитуды -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Амплитуда:"/>
+                        <Slider Name="Amplitude3Slider" Minimum="0" Maximum="1" Value="0.5" Width="200" TickFrequency="0.1" IsSnapToTickEnabled="True"/>
+                        <TextBlock Name="Amplitude3TextBlock" Text="0.5"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <!-- Вторая колонка, содержащая элементы для настройки эффектов -->
+        <StackPanel Grid.Column="1" Margin="2.5">
+
+            <!-- Эквалайзер -->
+            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,5">
+                <StackPanel>
+                    <TextBlock Text="Эквалайзер" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                    <!-- Регулятор низких частот -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Низкие частоты:"/>
+                        <Slider Name="LowGainSlider" Minimum="0" Maximum="2" Value="1" Width="200" TickFrequency="0.1" IsSnapToTickEnabled="True"/>
+                        <TextBlock Name="LowGainTextBlock" Text="1"/>
+                    </StackPanel>
+
+                    <!-- Регулятор средних частот -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Средние частоты:" Margin="0,10,0,0"/>
+                        <Slider Name="MidGainSlider" Minimum="0" Maximum="2" Value="1" Width="200" TickFrequency="0.1" IsSnapToTickEnabled="True"/>
+                        <TextBlock Name="MidGainTextBlock" Text="1"/>
+                    </StackPanel>
+
+                    <!-- Регулятор высоких частот -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Высокие частоты:" Margin="0,10,0,0"/>
+                        <Slider Name="HighGainSlider" Minimum="0" Maximum="2" Value="1" Width="200" TickFrequency="0.1" IsSnapToTickEnabled="True"/>
+                        <TextBlock Name="HighGainTextBlock" Text="1"/>
+                    </StackPanel>
+
+                    <!-- Низкочастотный отсекатель -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Низкочастотный отсекатель:" Margin="0,10,0,0"/>
+                        <Slider Name="LowFreqSlider" Minimum="20" Maximum="1000" Value="150" Width="200" TickFrequency="10" IsSnapToTickEnabled="True"/>
+                        <TextBlock Name="LowFreqTextBlock" Text="150"/>
+                    </StackPanel>
+
+                    <!-- Высокочастотный отсекатель -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Высокочастотный отсекатель:" Margin="0,10,0,0"/>
+                        <Slider Name="HighFreqSlider" Minimum="1000" Maximum="5000" Value="1500" Width="200" TickFrequency="100" IsSnapToTickEnabled="True"/>
+                        <TextBlock Name="HighFreqTextBlock" Text="1500"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- График для отображения данных -->
+            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,5">
+                <StackPanel>
+                    <oxy:PlotView Name="plotView" Grid.ColumnSpan="2" Margin="2.5" VerticalAlignment="Stretch" Height="166"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <!-- Панель управления, содержащая кнопки для запуска и остановки воспроизведения -->
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="20">
+            <Button Name="PlayButton" Content="Старт" Click="PlayButton_Click" Width="100" Margin="0,0,10,0"/>
+            <Button Name="StopButton" Content="Стоп" Click="StopButton_Click" Width="100"/>
+        </StackPanel>
+    </Grid>
+</Window>
