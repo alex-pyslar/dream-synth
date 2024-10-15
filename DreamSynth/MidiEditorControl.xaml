@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="DreamSynth.MidiEditorControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             Height="400" Width="800">
+    <Grid>
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
+                <Button Name="NewButton" Content="New" Click="NewButton_Click"/>
+                <Button Name="OpenButton" Content="Open" Click="OpenButton_Click"/>
+                <Button Name="SaveButton" Content="Save" Click="SaveButton_Click"/>
+                <Button Name="AddNoteButton" Content="Add Note" Click="AddNoteButton_Click"/>
+            </StackPanel>
+            <Canvas Name="MidiCanvas" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        </DockPanel>
+    </Grid>
+</UserControl>
