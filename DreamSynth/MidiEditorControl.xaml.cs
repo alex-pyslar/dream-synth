@@ -1,124 +1,148 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Shapes;
-using Microsoft.Win32;
-using NAudio.Midi;
+using System.Windows.Media;
 
-namespace DreamSynth
+namespace MidiEditor
 {
     public partial class MidiEditorControl : UserControl
     {
-        private MidiEventCollection midiEvents;
-        private List<Rectangle> noteRectangles = new List<Rectangle>();
+        private ObservableCollection<MidiNote> Notes { get; set; } = new ObservableCollection<MidiNote>();
+        private MidiNote SelectedNote { get; set; }
+        private bool isDragging = false;
+        private const double noteHeight = 20; // Высота ноты
+        private const double gridSize = 20; // Размер ячейки сетки
 
         public MidiEditorControl()
         {
             InitializeComponent();
-            midiEvents = new MidiEventCollection(1, 120);
+            DrawGrid(); // Рисуем сетку при инициализации
         }
 
-        private void NewButton_Click(object sender, RoutedEventArgs e)
+        private void DrawGrid()
         {
-            midiEvents = new MidiEventCollection(1, 120);
-            MidiCanvas.Children.Clear();
-            noteRectangles.Clear();
-        }
+            int numHorizontalLines = (int)(NoteCanvas.ActualHeight / gridSize); // Количество горизонтальных линий
+            int numVerticalLines = (int)(NoteCanvas.ActualWidth / gridSize); // Количество вертикальных линий
 
-        private void OpenButton_Click(object sender, RoutedEventArgs e)
-        {
-            var openFileDialog = new OpenFileDialog { Filter = "MIDI files (*.mid)|*.mid" };
-            if (openFileDialog.ShowDialog() == true)
+            // Рисуем горизонтальные линии
+            for (int i = 0; i <= numHorizontalLines; i++)
             {
-                var midiFile = new MidiFile(openFileDialog.FileName, false);
-                midiEvents = midiFile.Events;
-                LoadMidiEvents();
-            }
-        }
-
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
-            var saveFileDialog = new SaveFileDialog { Filter = "MIDI files (*.mid)|*.mid" };
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                MidiFile.Export(saveFileDialog.FileName, midiEvents);
-            }
-        }
-
-        private void AddNoteButton_Click(object sender, RoutedEventArgs e)
-        {
-            var noteEvent = new NoteOnEvent(0, 1, 60, 127, 480);
-            midiEvents[0].Add(noteEvent);
-            DrawNoteRectangle(noteEvent);
-        }
-
-        private void LoadMidiEvents()
-        {
-            MidiCanvas.Children.Clear();
-            noteRectangles.Clear();
-
-            foreach (var track in midiEvents)
-            {
-                foreach (var midiEvent in track)
+                var line = new Line
                 {
-                    if (midiEvent is NoteOnEvent noteOn)
-                    {
-                        DrawNoteRectangle(noteOn);
-                    }
-                }
+                    X1 = 0,
+                    Y1 = i * gridSize,
+                    X2 = NoteCanvas.ActualWidth,
+                    Y2 = i * gridSize,
+                    Stroke = Brushes.LightGray,
+                    StrokeThickness = 0.5
+                };
+                NoteCanvas.Children.Add(line);
+            }
+
+            // Рисуем вертикальные линии
+            for (int i = 0; i <= numVerticalLines; i++)
+            {
+                var line = new Line
+                {
+                    X1 = i * gridSize,
+                    Y1 = 0,
+                    X2 = i * gridSize,
+                    Y2 = NoteCanvas.ActualHeight,
+                    Stroke = Brushes.LightGray,
+                    StrokeThickness = 0.5
+                };
+                NoteCanvas.Children.Add(line);
             }
         }
 
-        private void DrawNoteRectangle(NoteOnEvent noteOn)
+        private void DrawNote(MidiNote note)
         {
+            var noteWidth = note.Duration * 10; // Ширина в зависимости от длительности
+            var noteY = (100 - note.Pitch) * gridSize / noteHeight; // Вычисление вертикальной позиции с учетом высоты ноты
+
             var rect = new Rectangle
             {
-                Width = noteOn.NoteLength / 10.0,
-                Height = 20,
+                Width = noteWidth,
+                Height = noteHeight,
                 Fill = Brushes.Blue,
-                Stroke = Brushes.Black
+                Tag = note // Сохраняем объект ноты в тег
             };
 
-            Canvas.SetLeft(rect, noteOn.AbsoluteTime / 10.0);
-            Canvas.SetTop(rect, (127 - noteOn.NoteNumber) * 3); // Расположение ноты по высоте
-            MidiCanvas.Children.Add(rect);
-            noteRectangles.Add(rect);
+            rect.MouseLeftButtonDown += Note_MouseLeftButtonDown;
 
-            rect.MouseDown += Note_MouseDown;
-            rect.MouseMove += Note_MouseMove;
-            rect.MouseUp += Note_MouseUp;
+            // Установите горизонтальную позицию на ближайшую сетку
+            Canvas.SetLeft(rect, RoundToGrid(note.StartTime * 10));
+            Canvas.SetTop(rect, noteY);
+
+            NoteCanvas.Children.Add(rect);
+            Notes.Add(note); // Добавляем ноту в коллекцию
         }
 
-        private bool isDragging = false;
-        private Point startPoint;
-        private Rectangle selectedRect;
-
-        private void Note_MouseDown(object sender, MouseButtonEventArgs e)
+        private double RoundToGrid(double value)
         {
-            selectedRect = sender as Rectangle;
-            startPoint = e.GetPosition(MidiCanvas);
-            isDragging = true;
-            selectedRect.CaptureMouse();
+            return Math.Round(value / gridSize) * gridSize; // Округляем до ближайшей линии сетки
         }
 
-        private void Note_MouseMove(object sender, MouseEventArgs e)
+        private void Note_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (isDragging && selectedRect != null)
+            if (sender is Rectangle rect)
             {
-                var position = e.GetPosition(MidiCanvas);
-                var offsetX = position.X - startPoint.X;
-                Canvas.SetLeft(selectedRect, Canvas.GetLeft(selectedRect) + offsetX);
-                startPoint = position;
+                SelectedNote = rect.Tag as MidiNote;
+                isDragging = true;
+                Mouse.Capture(rect);
             }
         }
 
-        private void Note_MouseUp(object sender, MouseButtonEventArgs e)
+        private void NoteCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (isDragging) return; // Игнорируем добавление нот, если мы перетаскиваем
+
+            var mousePosition = e.GetPosition(NoteCanvas);
+            var note = new MidiNote
+            {
+                Pitch = 60, // Например, C4
+                StartTime = RoundToGrid(mousePosition.X / 10), // Преобразуем в время и округляем
+                Duration = 1 // Устанавливаем длительность
+            };
+
+            DrawNote(note);
+        }
+
+        private void NoteCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isDragging && SelectedNote != null)
+            {
+                var mousePosition = e.GetPosition(NoteCanvas);
+                SelectedNote.StartTime = RoundToGrid(mousePosition.X / 10); // Обновляем время начала и округляем
+                UpdateCanvas(); // Перерисовываем канвас
+            }
+        }
+
+        private void NoteCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             isDragging = false;
-            selectedRect?.ReleaseMouseCapture();
+            Mouse.Capture(null); // Освобождаем захват мыши
+            SelectedNote = null; // Сбрасываем выделение
         }
+
+        private void UpdateCanvas()
+        {
+            NoteCanvas.Children.Clear(); // Очищаем канвас
+            DrawGrid(); // Рисуем сетку снова
+            foreach (var note in Notes)
+            {
+                DrawNote(note); // Перерисовываем все ноты
+            }
+        }
+    }
+
+    public class MidiNote
+    {
+        public int Pitch { get; set; } // Нота (например, C4 = 60)
+        public double StartTime { get; set; } // Время начала
+        public double Duration { get; set; } // Длительность
     }
 }

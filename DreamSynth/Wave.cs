@@ -26,9 +26,7 @@ namespace DreamSynth
         public void Set(WaveType type, int octave, int note, float amplitude)
         {
             Type = type;
-
             Frequency = (float)(440 * Math.Pow(2, (note - 9 + (octave - 4) * 12) / 12.0));
-            
             Amplitude = amplitude;
         }
     }

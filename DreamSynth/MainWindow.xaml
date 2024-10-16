@@ -4,7 +4,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:dreamSynth="clr-namespace:DreamSynth"
-        Title="DreamSynth" Height="550" Width="1000">
+        xmlns:midiEditor="clr-namespace:MidiEditor"
+        Title="DreamSynth" Height="550" Width="1040">
 
     <!-- Основная сетка, задающая разметку для элементов интерфейса -->
     <Grid Margin="2.5">
@@ -13,22 +14,35 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
-        <dreamSynth:WaveGeneratorControl/>
-
-        <!-- Вторая колонка, содержащая элементы для настройки эффектов -->
+        
+        <StackPanel Grid.Column="0" Margin="2.5">
+            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,5">
+                <StackPanel>
+                    <dreamSynth:WaveGeneratorControl/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+        
         <StackPanel Grid.Column="1" Margin="2.5">
-
+            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,5">
+                <StackPanel>
+                    <midiEditor:MidiEditorControl></midiEditor:MidiEditorControl>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+        
+        <!-- Вторая колонка, содержащая элементы для настройки эффектов -->
+        <StackPanel Grid.Column="2" Margin="2.5">
             <!-- График для отображения данных -->
             <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,5">
                 <StackPanel>
                     <oxy:PlotView Name="plotView" Grid.ColumnSpan="2" Margin="2.5" VerticalAlignment="Stretch" Height="166"/>
                 </StackPanel>
             </Border>
-            
-            <dreamSynth:MidiEditorControl></dreamSynth:MidiEditorControl>
         </StackPanel>
+        
 
         <!-- Панель управления, содержащая кнопки для запуска и остановки воспроизведения -->
         <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="20">

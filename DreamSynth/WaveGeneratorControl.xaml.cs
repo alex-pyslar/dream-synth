@@ -60,7 +60,6 @@ namespace DreamSynth
                 Octave3ComboBox.SelectedIndex,
                 NoteComboBox.SelectedIndex,
                 (float)AmplitudeSlider.Value);
-
         }
     }
 }
