@@ -56,7 +56,7 @@ namespace DreamSynth
                 NoteComboBox.SelectedIndex,
                 (float)AmplitudeSlider.Value);
             WaveGenerator.Waves[2].Set(
-                (WaveType)WaveType2ComboBox.SelectedIndex,
+                (WaveType)WaveType3ComboBox.SelectedIndex,
                 Octave3ComboBox.SelectedIndex,
                 NoteComboBox.SelectedIndex,
                 (float)AmplitudeSlider.Value);

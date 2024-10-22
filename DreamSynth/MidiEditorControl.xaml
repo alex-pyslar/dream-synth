@@ -1,12 +1,16 @@
-﻿<UserControl x:Class="MidiEditor.MidiEditorControl"
+﻿<UserControl x:Class="DreamSynth.MidiEditorControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Height="600" Width="800">
+             Height="120" Width="640">
     <Grid>
-        <Canvas Name="NoteCanvas" Background="LightGray" MouseLeftButtonDown="NoteCanvas_MouseLeftButtonDown"
-                MouseMove="NoteCanvas_MouseMove" MouseLeftButtonUp="NoteCanvas_MouseLeftButtonUp">
-            <!-- Здесь будут рисоваться ноты -->
-        </Canvas>
-        <Slider Name="TempoSlider" Minimum="60" Maximum="180" Value="120" VerticalAlignment="Bottom" />
+        <!-- Основной Canvas для отображения нот, занимает только левый верхний угол -->
+        <Canvas Name="NoteCanvas" Background="LightGray" 
+                Width="640" Height="120"
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top"
+                MouseLeftButtonDown="NoteCanvas_MouseLeftButtonDown"
+                MouseMove="NoteCanvas_MouseMove"
+                MouseLeftButtonUp="NoteCanvas_MouseLeftButtonUp" />
     </Grid>
+
 </UserControl>
