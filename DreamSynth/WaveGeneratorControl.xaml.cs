@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +16,9 @@ namespace DreamSynth
             new Wave(WaveType.Sine, 440, 0.5f),
             new Wave(WaveType.Sine, 440, 0.5f)
         });
+        
+        // Флаг для отслеживания, выполняется ли обновление
+        private bool isUpdating = false;
 
         public WaveGeneratorControl()
         {
@@ -27,7 +31,6 @@ namespace DreamSynth
             WaveType1ComboBox.SelectionChanged += ComboBox_SelectionChanged;
             WaveType2ComboBox.SelectionChanged += ComboBox_SelectionChanged;
             WaveType3ComboBox.SelectionChanged += ComboBox_SelectionChanged;
-            NoteComboBox.SelectionChanged += ComboBox_SelectionChanged;
             
             Octave1ComboBox.SelectionChanged += ComboBox_SelectionChanged;
             Octave2ComboBox.SelectionChanged += ComboBox_SelectionChanged;
@@ -48,41 +51,45 @@ namespace DreamSynth
         // Метод обновления параметров генерируемой волны
         private async void Update()
         {
-            int octave1 = Octave1ComboBox.SelectedIndex;
-            int octave2 = Octave2ComboBox.SelectedIndex;
-            int octave3 = Octave3ComboBox.SelectedIndex;
+            
+            // Проверяем, выполняется ли обновление в данный момент
+            if (isUpdating) return;
 
+            isUpdating = true; // Устанавливаем флаг обновления
+            
             while (true) // Бесконечный цикл для повторения проигрывания
             {
-                var notes = MidiEditorControl.Notes.ToList();
-
+                // Получаем отсортированный список нот по времени начала
+                var notes = MidiEditorControl.Notes.OrderBy(n => n.StartTime).ToList();
                 for (int i = 0; i < notes.Count; i++)
                 {
+                    // Рассчитываем время проигрывания ноты на основе ее длительности
+                    double noteDuration = notes[i].Duration * 500; // Время длительности ноты в миллисекундах
+
                     // Установка параметров для каждой волны
                     WaveGenerator.Waves[0].Set(
                         (WaveType)WaveType1ComboBox.SelectedIndex,
-                        octave1,
+                        Octave1ComboBox.SelectedIndex,
                         notes[i].Pitch, // Используем pitch от 0 до 7
                         (float)AmplitudeSlider.Value);
 
                     WaveGenerator.Waves[1].Set(
                         (WaveType)WaveType2ComboBox.SelectedIndex,
-                        octave2,
+                        Octave2ComboBox.SelectedIndex,
                         notes[i].Pitch, // Используем pitch от 0 до 7
                         (float)AmplitudeSlider.Value);
 
                     WaveGenerator.Waves[2].Set(
                         (WaveType)WaveType3ComboBox.SelectedIndex,
-                        octave3,
+                        Octave3ComboBox.SelectedIndex,
                         notes[i].Pitch, // Используем pitch от 0 до 7
                         (float)AmplitudeSlider.Value);
 
-                    // Здесь добавляем задержку
-                    await Task.Delay(500); // Задержка в 500 миллисекунд
+                    // Здесь добавляем задержку, учитывая длительность ноты
+                    await Task.Delay((int)noteDuration); // Задержка в миллисекундах на основе длительности ноты
                 }
             }
+            
         }
-
-
     }
 }
