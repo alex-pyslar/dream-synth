@@ -10,7 +10,7 @@ namespace DreamSynth
 {
     public partial class MidiEditorControl : UserControl
     {
-        private ObservableCollection<MidiNote> Notes { get; set; } = new ObservableCollection<MidiNote>();
+        public static ObservableCollection<MidiNote> Notes { get; set; } = new ObservableCollection<MidiNote>();
         private MidiNote SelectedNote { get; set; }
         private Rectangle SelectedRectangle { get; set; }
         private bool isDragging = false;
@@ -24,7 +24,7 @@ namespace DreamSynth
         {
             InitializeComponent();
             NoteCanvas.Width = 640;  // Ширина канваса
-            NoteCanvas.Height = 140;  // Высота канваса
+            NoteCanvas.Height = 140;  // Высота канваса для диапазона нот от 0 до 7
             this.Loaded += MidiEditorControl_Loaded; // Загружаем сетку при инициализации
         }
 
@@ -50,7 +50,7 @@ namespace DreamSynth
                     Y1 = i * gridSize,
                     X2 = NoteCanvas.ActualWidth,
                     Y2 = i * gridSize,
-                    Stroke = Brushes.Black, // Изменено на черный цвет
+                    Stroke = Brushes.Black, // Черный цвет
                     StrokeThickness = 0.5 // Толщина линии
                 };
                 NoteCanvas.Children.Add(line);
@@ -65,7 +65,7 @@ namespace DreamSynth
                     Y1 = 0,
                     X2 = i * gridSize,
                     Y2 = NoteCanvas.ActualHeight,
-                    Stroke = Brushes.Black, // Изменено на черный цвет
+                    Stroke = Brushes.Black, // Черный цвет
                     StrokeThickness = 0.5 // Толщина линии
                 };
                 NoteCanvas.Children.Add(line);
@@ -82,7 +82,7 @@ namespace DreamSynth
         private void DrawNote(MidiNote note)
         {
             var noteWidth = note.Duration * gridSize;
-            var noteY = (127 - note.Pitch) * (gridSize / 2); // Рассчитываем позицию по высоте
+            var noteY = note.Pitch * (gridSize / 2); // Рассчитываем позицию по высоте (0-я нота сверху, 7-я снизу)
 
             // Убедимся, что позиция Y округлена по сетке
             noteY = RoundToGrid(noteY); // Округление по сетке
@@ -119,7 +119,9 @@ namespace DreamSynth
 
             var mousePosition = e.GetPosition(NoteCanvas);
             var startTime = RoundToGrid(mousePosition.X); // Прямое округление по сетке
-            var pitch = (int)(127 - (mousePosition.Y / (gridSize / 2))); // Преобразуем Y-координату в высоту
+            var pitch = (int)Math.Round(mousePosition.Y / (gridSize / 2)); // Преобразуем Y-координату в высоту (0 сверху, 7 снизу)
+
+            pitch = Clamp(pitch, 0, 7); // Ограничиваем диапазон pitch от 0 до 7
 
             var note = new MidiNote
             {
@@ -178,11 +180,10 @@ namespace DreamSynth
 
                 SelectedNote.StartTime = newStartTime;
 
-                // Обновление вертикальной позиции
-                var newPitch = 127 - (int)Math.Round(mousePosition.Y / (gridSize / 2)); // Преобразуем Y-координату в высоту
+                // Обновление вертикальной позиции (диапазон pitch от 0 до 7)
+                var newPitch = (int)Math.Round(mousePosition.Y / (gridSize / 2)); // Преобразуем Y-координату в высоту
                 
-                // Ограничиваем вертикальную позицию
-                newPitch = Clamp(newPitch, 0, 127); // Не позволяем выходить за пределы высоты канваса
+                newPitch = Clamp(newPitch, 0, 7); // Ограничиваем вертикальную позицию
 
                 SelectedNote.Pitch = newPitch; // Устанавливаем ограниченную высоту
 
