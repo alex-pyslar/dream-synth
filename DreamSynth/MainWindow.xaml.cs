@@ -8,7 +8,7 @@ namespace DreamSynth
 {
     public partial class MainWindow : Window
     {
-        private WaveOutEvent waveOut;
+        public static WaveOutEvent waveOut;
         private AudioVisualizer audioVisualizer;
 
         public MainWindow()

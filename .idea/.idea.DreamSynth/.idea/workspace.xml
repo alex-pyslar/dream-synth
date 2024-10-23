@@ -9,8 +9,7 @@
   <component name="ChangeListManager">
     <list default="true" id="13f052d6-c8c6-4bb5-b22e-deabee973185" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DreamSynth/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DreamSynth/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DreamSynth/MidiEditorControl.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DreamSynth/MidiEditorControl.xaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DreamSynth/Wave.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DreamSynth/Wave.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DreamSynth/MainWindow.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DreamSynth/MainWindow.xaml.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DreamSynth/WaveGeneratorControl.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DreamSynth/WaveGeneratorControl.xaml.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -46,20 +45,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Project.DreamSynth.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Project.DreamSynth.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="DreamSynth" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -94,6 +93,7 @@
       <workItem from="1729600417322" duration="8946000" />
       <workItem from="1729617298949" duration="559000" />
       <workItem from="1729688009374" duration="3021000" />
+      <workItem from="1729696234622" duration="869000" />
     </task>
     <task id="LOCAL-00001" summary="0.0.3">
       <option name="closed" value="true" />

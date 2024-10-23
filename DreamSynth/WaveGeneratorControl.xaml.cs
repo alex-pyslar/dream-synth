@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -43,40 +45,44 @@ namespace DreamSynth
             Update(); // Обновление параметров генерируемой волны
         }
 
-        // Метод преобразования pitch в частоту
-        private float PitchToFrequency(int pitch, int octave)
-        {
-            // Устанавливаем базовые частоты для ноты A (440 Гц)
-            float baseFrequency = 440.0f; // A4
-            int midiNoteNumber = (pitch + (octave * 7)) + 57; // Преобразуем в MIDI-номер, A4 (octave 4) = 69
-            return baseFrequency * (float)Math.Pow(2.0, (midiNoteNumber - 69) / 12.0);
-        }
-
         // Метод обновления параметров генерируемой волны
-        private void Update()
+        private async void Update()
         {
             int octave1 = Octave1ComboBox.SelectedIndex;
             int octave2 = Octave2ComboBox.SelectedIndex;
             int octave3 = Octave3ComboBox.SelectedIndex;
 
-            WaveGenerator.Waves[0].Set(
-                (WaveType)WaveType1ComboBox.SelectedIndex,
-                octave1,
-                MidiEditorControl.Notes[0].Pitch, // Используем pitch от 0 до 7
-                (float)AmplitudeSlider.Value);
+            while (true) // Бесконечный цикл для повторения проигрывания
+            {
+                var notes = MidiEditorControl.Notes.ToList();
 
-            WaveGenerator.Waves[1].Set(
-                (WaveType)WaveType2ComboBox.SelectedIndex,
-                octave2,
-                MidiEditorControl.Notes[0].Pitch, // Используем pitch от 0 до 7
-                (float)AmplitudeSlider.Value);
+                for (int i = 0; i < notes.Count; i++)
+                {
+                    // Установка параметров для каждой волны
+                    WaveGenerator.Waves[0].Set(
+                        (WaveType)WaveType1ComboBox.SelectedIndex,
+                        octave1,
+                        notes[i].Pitch, // Используем pitch от 0 до 7
+                        (float)AmplitudeSlider.Value);
 
-            WaveGenerator.Waves[2].Set(
-                (WaveType)WaveType3ComboBox.SelectedIndex,
-                octave3,
-                MidiEditorControl.Notes[0].Pitch, // Используем pitch от 0 до 7
-                (float)AmplitudeSlider.Value);
+                    WaveGenerator.Waves[1].Set(
+                        (WaveType)WaveType2ComboBox.SelectedIndex,
+                        octave2,
+                        notes[i].Pitch, // Используем pitch от 0 до 7
+                        (float)AmplitudeSlider.Value);
+
+                    WaveGenerator.Waves[2].Set(
+                        (WaveType)WaveType3ComboBox.SelectedIndex,
+                        octave3,
+                        notes[i].Pitch, // Используем pitch от 0 до 7
+                        (float)AmplitudeSlider.Value);
+
+                    // Здесь добавляем задержку
+                    await Task.Delay(500); // Задержка в 500 миллисекунд
+                }
+            }
         }
+
 
     }
 }
