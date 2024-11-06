@@ -8,7 +8,6 @@ namespace DreamSynth // Объявляем пространство имен д�
     public class WaveGenerator: WaveProvider32
     {
         public Wave[] Waves = new Wave[3];
-        public bool isPlaying = false;
 
         // Конструктор класса, принимающий параметры для трех волн
         public WaveGenerator(Wave[] waves)

@@ -184,10 +184,26 @@ namespace DreamSynth
                 // Перерисовываем сетку (для перерисовки канваса)
                 DrawGrid();
             }
+            else if (isResizing && SelectedNote != null)
+            {
+                // Вычисляем изменение ширины на основе позиции мыши
+                var widthChange = mousePosition.X - mouseStartPosition.X;
+        
+                // Округляем изменение ширины до ближайшего шага сетки
+                var newWidth = RoundToGrid(initialWidth + widthChange);
+        
+                // Обновляем продолжительность ноты (duration) на основе ширины
+                var newDuration = Math.Max(0, newWidth / gridSize); // Учитываем минимальное значение длительности
+
+                SelectedNote.Duration = newDuration;
+
+                // Обновляем ширину прямоугольника
+                SelectedRectangle.Width = newWidth;
+
+                // Перерисовываем сетку
+                DrawGrid();
+            }
         }
-
-
-
 
         private void NoteCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {

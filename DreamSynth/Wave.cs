@@ -28,12 +28,14 @@ namespace DreamSynth
         {
             Type = type;
 
-            // Преобразование pitch от 0-7 в MIDI номер
-            float midiNoteNumber = pitch + (octave * 7) + 57; // A4 = MIDI номер 69
-            
+            // Получаем MIDI номер для ноты с учетом pitch и октавы
+            int midiNoteNumber = 11 - (int)pitch + (octave * 12); // Учитываем октаву
+
             // Вычисляем частоту на основе MIDI номера
-            Frequency = (float)(440 * Math.Pow(2, (midiNoteNumber - 69) / 12.0));
+            Frequency = (float)(440 * Math.Pow(2, (midiNoteNumber - 69) / 12.0)); // A4 = 440 Гц
             Amplitude = amplitude;
         }
+
+
     }
 }
