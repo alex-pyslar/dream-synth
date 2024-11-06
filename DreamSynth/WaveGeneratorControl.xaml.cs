@@ -18,7 +18,7 @@ namespace DreamSynth
         });
         
         // Флаг для отслеживания, выполняется ли обновление
-        private bool isUpdating = false;
+        private bool _isUpdating = false;
 
         public WaveGeneratorControl()
         {
@@ -53,9 +53,9 @@ namespace DreamSynth
         {
             
             // Проверяем, выполняется ли обновление в данный момент
-            if (isUpdating) return;
+            if (_isUpdating) return;
 
-            isUpdating = true; // Устанавливаем флаг обновления
+            _isUpdating = true; // Устанавливаем флаг обновления
             
             while (true) // Бесконечный цикл для повторения проигрывания
             {
@@ -65,7 +65,7 @@ namespace DreamSynth
                 {
                     // Рассчитываем время проигрывания ноты на основе ее длительности
                     double noteDuration = notes[i].Duration * 500; // Время длительности ноты в миллисекундах
-
+                    System.Console.WriteLine(notes[i].Pitch);
                     // Установка параметров для каждой волны
                     WaveGenerator.Waves[0].Set(
                         (WaveType)WaveType1ComboBox.SelectedIndex,

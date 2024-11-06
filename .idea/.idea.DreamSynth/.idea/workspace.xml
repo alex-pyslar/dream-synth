@@ -9,6 +9,9 @@
   <component name="ChangeListManager">
     <list default="true" id="13f052d6-c8c6-4bb5-b22e-deabee973185" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DreamSynth/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DreamSynth/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DreamSynth/MainWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/DreamSynth/MainWindow.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DreamSynth/MidiEditorControl.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/DreamSynth/MidiEditorControl.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DreamSynth/MidiEditorControl.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DreamSynth/MidiEditorControl.xaml.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,6 +95,8 @@
       <workItem from="1729617298949" duration="559000" />
       <workItem from="1729688009374" duration="3021000" />
       <workItem from="1729696234622" duration="5803000" />
+      <workItem from="1730482962557" duration="198000" />
+      <workItem from="1730812719045" duration="9698000" />
     </task>
     <task id="LOCAL-00001" summary="0.0.3">
       <option name="closed" value="true" />

@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:dreamSynth="clr-namespace:DreamSynth"
-        Title="DreamSynth" Height="250" Width="1550">
+        Icon="sticker.ico"
+        Title="DreamSynth" Height="450" Width="1620">
 
     <Grid Margin="2.5">
         <Grid.ColumnDefinitions>
