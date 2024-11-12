@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using OxyPlot;
+﻿using OxyPlot;
 using System.Windows;
 using NAudio.Wave;
 
@@ -18,7 +16,6 @@ namespace DreamSynth
             
             waveOut = new WaveOutEvent();
             waveOut.Init(WaveGeneratorControl.WaveGenerator);
-            waveOut.DesiredLatency = 50; // Уменьшение задержки
 
             WaveGeneratorControl.WaveGenerator.OnSampleGenerated += samples =>
             {

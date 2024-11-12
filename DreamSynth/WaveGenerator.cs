@@ -1,8 +1,8 @@
-﻿using NAudio.Wave; // Подключаем библиотеку NAudio для работы со звуковыми волнами
-using System; // Подключаем базовую библиотеку System
-using System.Linq; // Подключаем библиотеку Linq для удобной работы с коллекциями
+﻿using NAudio.Wave;
+using System;
+using System.Linq;
 
-namespace DreamSynth // Объявляем пространство имен для проекта синтезатора
+namespace DreamSynth
 {
     // Класс генератора волн, наследующийся от WaveProvider32
     public class WaveGenerator: WaveProvider32
