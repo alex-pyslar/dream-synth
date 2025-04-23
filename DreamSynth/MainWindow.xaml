@@ -4,11 +4,10 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:dreamSynth="clr-namespace:DreamSynth"
         Icon="sticker.ico"
-        Title="DreamSynth" Height="450" Width="1620">
+        Title="DreamSynth" Height="720" Width="1280">
 
     <Grid Margin="2.5">
         <Grid.ColumnDefinitions>
-            <!-- Задаем колонкам автоматическую ширину -->
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="400"/>
@@ -17,28 +16,28 @@
         <!-- Первая колонка для генератора волн -->
         <Grid Grid.Column="0" Margin="2.5">
             <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,5">
-                <dreamSynth:WaveGeneratorControl/>
+                <dreamSynth:WaveGeneratorControl x:Name="WaveGeneratorControl"/>
             </Border>
         </Grid>
 
         <!-- Вторая колонка для редактора MIDI -->
         <Grid Grid.Column="1" Margin="2.5">
             <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,5">
-                <dreamSynth:MidiEditorControl HorizontalAlignment="Stretch" VerticalAlignment="Top" />
+                <dreamSynth:MidiEditorControl x:Name="MidiEditorControl" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
             </Border>
-        </Grid>
-
-        <!-- Третья колонка для настроек эффектов -->
-        <Grid Grid.Column="2" Margin="2.5">
             <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,5">
                 <oxy:PlotView Name="plotView" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="166"/>
             </Border>
         </Grid>
 
-        <!-- Панель управления для кнопок Старт и Стоп -->
+        <!-- Панель управления для кнопок Старт и Стоп, а также ползунка BPM -->
         <StackPanel Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="20">
             <Button Name="PlayButton" Content="Старт" Click="PlayButton_Click" Width="100" Margin="0,0,10,0"/>
-            <Button Name="StopButton" Content="Стоп" Click="StopButton_Click" Width="100"/>
+            <Button Name="StopButton" Content="Стоп" Click="StopButton_Click" Width="100" Margin="0,0,10,0"/>
+            <!-- Ползунок BPM -->
+            <TextBlock Text="BPM:" VerticalAlignment="Center" Margin="10,0" />
+            <Slider Name="BpmSlider" Minimum="60" Maximum="240" Value="120" ValueChanged="BpmSlider_ValueChanged" Width="200" />
+            <TextBlock Name="BpmValue" Text="{Binding ElementName=BpmSlider, Path=Value, StringFormat={}{0:F1}}" VerticalAlignment="Center" Margin="10,0"/>
         </StackPanel>
     </Grid>
 </Window>

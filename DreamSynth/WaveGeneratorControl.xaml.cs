@@ -6,8 +6,11 @@ using System.Windows.Controls;
 
 namespace DreamSynth
 {
+    
     public partial class WaveGeneratorControl : UserControl
     {
+        public static int counter = 0;
+        
         public static WaveGenerator WaveGenerator = new WaveGenerator(new Wave[]
         {
             new Wave(WaveType.Sine, 440, 0.5f),
@@ -46,80 +49,77 @@ namespace DreamSynth
             Update(); // Обновление параметров генерируемой волны
         }
 
-        // Метод обновления параметров генерируемой волны
-        private async void Update()
+        public async void Update()
         {
-            // Проверяем, выполняется ли обновление в данный момент
             if (_isUpdating) return;
+            _isUpdating = true;
 
-            _isUpdating = true; // Устанавливаем флаг обновления
-
-            int counter = 0; // Счётчик времени
-
-            while (true) // Бесконечный цикл для повторения проигрывания
+            while (true)
             {
-                // Получаем список нот
                 var notes = MidiEditorControl.Notes.ToList();
-
-                // Обновляем счётчик времени
                 counter++;
 
-                // Сбрасываем счётчик, если он достиг 16000
-                if (counter > 400) counter = 0;
+                if (counter > 1600) counter = 0; // Сброс счётчика
 
-                // Ищем все ноты, которые должны проигрываться в данный момент
-                var notesToPlay = notes.Where(note =>
-                    counter >= note.StartTime * 50 && counter < (note.StartTime + note.Duration) * 50).ToList();
+                var notesToPlay = notes
+                    .Where(note => counter >= note.StartTime * 50 && counter < (note.StartTime + note.Duration) * 50)
+                    .ToList();
 
-                if (notesToPlay.Any()) // Если есть ноты для проигрывания
+                if (notesToPlay.Any())
                 {
-                    foreach (var note in notesToPlay)
+                    for (int i = 0; i < WaveGenerator.Waves.Length; i++)
                     {
-                        // Установка параметров для каждой волны
-                        WaveGenerator.Waves[0].Set(
-                            (WaveType)WaveType1ComboBox.SelectedIndex,
-                            Octave1ComboBox.SelectedIndex,
-                            note.Pitch,
-                            (float)AmplitudeSlider.Value);
+                        var note = notesToPlay[i % notesToPlay.Count];
 
-                        WaveGenerator.Waves[1].Set(
-                            (WaveType)WaveType2ComboBox.SelectedIndex,
-                            Octave2ComboBox.SelectedIndex,
+                        WaveGenerator.Waves[i].Set(
+                            (WaveType)GetWaveTypeFromComboBox(i),
+                            GetOctaveFromComboBox(i),
                             note.Pitch,
-                            (float)AmplitudeSlider.Value);
-
-                        WaveGenerator.Waves[2].Set(
-                            (WaveType)WaveType3ComboBox.SelectedIndex,
-                            Octave3ComboBox.SelectedIndex,
-                            note.Pitch,
-                            (float)AmplitudeSlider.Value);
-
-                        // Подождём 1 миллисекунду перед проигрыванием следующей ноты
-                        await Task.Delay(1);
+                            (float)AmplitudeSlider.Value
+                        );
                     }
                 }
-                else // Если нет нот для проигрывания, устанавливаем амплитуду в 0
+                else
                 {
-                    WaveGenerator.Waves[0].Set(
-                        (WaveType)WaveType1ComboBox.SelectedIndex,
-                        Octave1ComboBox.SelectedIndex,
-                        0,
-                        0);
-
-                    WaveGenerator.Waves[1].Set(
-                        (WaveType)WaveType2ComboBox.SelectedIndex,
-                        Octave2ComboBox.SelectedIndex,
-                        0,
-                        0);
-
-                    WaveGenerator.Waves[2].Set(
-                        (WaveType)WaveType3ComboBox.SelectedIndex,
-                        Octave3ComboBox.SelectedIndex,
-                        0,
-                        0);
+                    foreach (var wave in WaveGenerator.Waves)
+                    {
+                        wave.Set(WaveType.Sine, 0, 0, 0);
+                    }
                 }
-                // Задержка 1 миллисекунда перед следующим циклом
-                await Task.Delay(1);
+
+                // Рассчитываем задержку на основе BPM
+                await Task.Delay((int)MainWindow.interval);
+            }
+        }
+
+
+        private WaveType GetWaveTypeFromComboBox(int waveIndex)
+        {
+            switch (waveIndex)
+            {
+                case 0:
+                    return (WaveType)WaveType1ComboBox.SelectedIndex;
+                case 1:
+                    return (WaveType)WaveType2ComboBox.SelectedIndex;
+                case 2:
+                    return (WaveType)WaveType3ComboBox.SelectedIndex;
+                default:
+                    return WaveType.Sine;
+            }
+        }
+
+        private int GetOctaveFromComboBox(int waveIndex)
+        {
+            switch (waveIndex)
+            {
+                case 0:
+                    return Octave1ComboBox.SelectedIndex;
+                case 1:
+                    return Octave2ComboBox.SelectedIndex;
+                case 2:
+                    return Octave3ComboBox.SelectedIndex;
+                default:
+                    return 0;
             }
         }
     }

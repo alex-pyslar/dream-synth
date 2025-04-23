@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,12 +21,34 @@ namespace DreamSynth
         private const double noteHeight = 20;
         private const double gridSize = 20;
 
+        private Line PlaybackLine;
+        private static System.Windows.Threading.DispatcherTimer playbackTimer;
+        private double playbackPosition = 0; // Текущее положение воспроизведения
+
+
         public MidiEditorControl()
         {
             InitializeComponent();
             NoteCanvas.Width = 640;
             NoteCanvas.Height = gridSize * 12;
             this.Loaded += MidiEditorControl_Loaded;
+
+            // Инициализация линии воспроизведения
+            PlaybackLine = new Line
+            {
+                Stroke = Brushes.Red,
+                StrokeThickness = 2,
+                X1 = 0,
+                Y1 = 0,
+                X2 = 0,
+                Y2 = NoteCanvas.Height
+            };
+            NoteCanvas.Children.Add(PlaybackLine);
+
+            // Инициализация таймера воспроизведения
+            playbackTimer = new System.Windows.Threading.DispatcherTimer();
+            playbackTimer.Interval = TimeSpan.FromMilliseconds(1); // Интервал обновления (50 мс)
+            playbackTimer.Tick += PlaybackTimer_Tick;
         }
 
         private void MidiEditorControl_Loaded(object sender, RoutedEventArgs e)
@@ -67,6 +90,8 @@ namespace DreamSynth
                 NoteCanvas.Children.Add(line);
             }
 
+            NoteCanvas.Children.Add(PlaybackLine); // Добавляем линию воспроизведения поверх сетки
+
             foreach (var note in Notes)
             {
                 DrawNote(note);
@@ -76,11 +101,8 @@ namespace DreamSynth
         private void DrawNote(MidiNote note)
         {
             var noteWidth = note.Duration * gridSize;
-
-            // Вычисляем Y-координату для каждой ноты на основе pitch
-            var noteY = note.Pitch * (gridSize);  // Привязываем pitch к целому значению на сетке
-
-            noteY = RoundToGrid(noteY);  // Применяем округление к сетке
+            var noteY = note.Pitch * gridSize;
+            noteY = RoundToGrid(noteY); // Применяем округление к сетке
 
             var rect = new Rectangle
             {
@@ -95,13 +117,11 @@ namespace DreamSynth
             rect.MouseLeftButtonDown += Note_MouseLeftButtonDown;
             rect.MouseRightButtonDown += Note_MouseRightButtonDown;
 
-            // Для более точного отображения устанавливаем координаты
-            Canvas.SetLeft(rect, RoundToGrid(note.StartTime * gridSize));  // Используем округление для времени
-            Canvas.SetTop(rect, noteY);  // Округление для Y-позиции
+            Canvas.SetLeft(rect, RoundToGrid(note.StartTime * gridSize)); // Округление для времени
+            Canvas.SetTop(rect, noteY);
 
             NoteCanvas.Children.Add(rect);
         }
-
 
         private double RoundToGrid(double value)
         {
@@ -114,14 +134,12 @@ namespace DreamSynth
 
             var mousePosition = e.GetPosition(NoteCanvas);
             var startTime = RoundToGrid(mousePosition.X);
-
-            // Корректный расчет pitch, всегда целое число от 0 до 11
-            int pitchIndex = (int)Math.Round(mousePosition.Y / (gridSize));
-            pitchIndex = Math.Max(0, Math.Min(pitchIndex, 11)); // Ограничиваем pitch от 0 до 11 (для 12 полутонов)
+            int pitchIndex = (int)Math.Round(mousePosition.Y / gridSize);
+            pitchIndex = Math.Max(0, Math.Min(pitchIndex, 11));
 
             var note = new MidiNote
             {
-                Pitch = pitchIndex, // Устанавливаем корректный pitch
+                Pitch = pitchIndex,
                 StartTime = startTime / gridSize,
                 Duration = 1
             };
@@ -130,7 +148,6 @@ namespace DreamSynth
             DrawGrid();
         }
 
-        
         private void Note_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (sender is Rectangle rect)
@@ -142,7 +159,6 @@ namespace DreamSynth
                 Mouse.Capture(NoteCanvas);
             }
         }
-
 
         private void Note_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -160,47 +176,25 @@ namespace DreamSynth
         private void NoteCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             var mousePosition = e.GetPosition(NoteCanvas);
-
             if (isDragging && SelectedNote != null)
             {
-                // Обновляем StartTime на основе позиции мыши
                 var newStartTime = RoundToGrid(mousePosition.X) / gridSize;
-
-                // Ограничиваем значение StartTime
                 newStartTime = Math.Max(0, newStartTime);
-
-                // Обновляем pitch на основе новой позиции мыши
                 var newPitch = (int)Math.Round(mousePosition.Y / gridSize);
                 newPitch = Math.Max(0, Math.Min(newPitch, (int)(NoteCanvas.Height / gridSize) - 1));
-
-                // Обновляем свойства ноты
                 SelectedNote.StartTime = newStartTime;
                 SelectedNote.Pitch = newPitch;
-
-                // Обновляем позицию прямоугольника на канвасе, привязанную к сетке
                 Canvas.SetLeft(SelectedRectangle, RoundToGrid(SelectedNote.StartTime * gridSize));
                 Canvas.SetTop(SelectedRectangle, RoundToGrid(SelectedNote.Pitch * gridSize));
-
-                // Перерисовываем сетку (для перерисовки канваса)
                 DrawGrid();
             }
             else if (isResizing && SelectedNote != null)
             {
-                // Вычисляем изменение ширины на основе позиции мыши
                 var widthChange = mousePosition.X - mouseStartPosition.X;
-        
-                // Округляем изменение ширины до ближайшего шага сетки
                 var newWidth = RoundToGrid(initialWidth + widthChange);
-        
-                // Обновляем продолжительность ноты (duration) на основе ширины
-                var newDuration = Math.Max(0, newWidth / gridSize); // Учитываем минимальное значение длительности
-
+                var newDuration = Math.Max(0, newWidth / gridSize);
                 SelectedNote.Duration = newDuration;
-
-                // Обновляем ширину прямоугольника
                 SelectedRectangle.Width = newWidth;
-
-                // Перерисовываем сетку
                 DrawGrid();
             }
         }
@@ -215,6 +209,41 @@ namespace DreamSynth
                 SelectedNote = null;
                 SelectedRectangle = null;
             }
+        }
+
+        private void PlaybackTimer_Tick(object sender, EventArgs e)
+        {
+            // Увеличиваем положение воспроизведения на основе скорости и интервала
+            playbackPosition += gridSize * (playbackTimer.Interval.TotalMilliseconds / (MainWindow.interval));
+            
+            // Рассчитываем текущее положение линии воспроизведения
+            double lineX = RoundToGrid(playbackPosition * gridSize);
+    
+            // Проверяем, не вышла ли линия за пределы холста
+            if (lineX >= NoteCanvas.ActualWidth)
+            {
+                StopPlayback();
+                StartPlayback();
+            }
+            else
+            {
+                PlaybackLine.X1 += lineX;
+                PlaybackLine.X2 += lineX;
+            }
+        }
+
+        public void StartPlayback()
+        {
+            playbackPosition = 0;
+            playbackTimer.Start();
+        }
+
+        public void StopPlayback()
+        {
+            playbackTimer.Stop();
+            playbackPosition = 0;
+            PlaybackLine.X1 = 0;
+            PlaybackLine.X2 = 0;
         }
     }
 

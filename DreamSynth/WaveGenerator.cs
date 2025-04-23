@@ -4,63 +4,80 @@ using System.Linq;
 
 namespace DreamSynth
 {
-    // Класс генератора волн, наследующийся от WaveProvider32
-    public class WaveGenerator: WaveProvider32
+    public class WaveGenerator : WaveProvider32
     {
         public Wave[] Waves = new Wave[3];
+        private double phase1, phase2, phase3; // Фазы для каждой волны
+        private const float SAFETY_FACTOR = 0.8f; // Коэффициент для предотвращения клиппинга
 
-        // Конструктор класса, принимающий параметры для трех волн
         public WaveGenerator(Wave[] waves)
         {
             Waves = waves;
+            phase1 = phase2 = phase3 = 0.0;
         }
-        
-        // Событие, вызываемое при генерации сэмплов
+
         public event Action<float[]> OnSampleGenerated;
 
-        // Переопределенный метод для чтения сэмплов
         public override int Read(float[] buffer, int offset, int sampleCount)
         {
-            int sampleRate = WaveFormat.SampleRate; // Получаем частоту дискретизации
+            int sampleRate = WaveFormat.SampleRate;
+            double sampleRateD = (double)sampleRate;
 
             for (int i = 0; i < sampleCount; i++)
             {
-                double time = (double)(i + offset) / sampleRate; // Рассчитываем время текущего сэмпла
-                // Генерируем сэмплы для каждой из трех волн
-                float sample1 = GenerateWaveSample(Waves[0], time);
-                float sample2 = GenerateWaveSample(Waves[1], time);
-                float sample3 = GenerateWaveSample(Waves[2], time);
+                // Генерируем сэмплы для каждой волны с использованием фаз
+                float sample1 = GenerateWaveSample(Waves[0], ref phase1, sampleRateD);
+                float sample2 = GenerateWaveSample(Waves[1], ref phase2, sampleRateD);
+                float sample3 = GenerateWaveSample(Waves[2], ref phase3, sampleRateD);
+
+                // Микшируем сэмплы с применением коэффициента безопасности
+                float combinedSample = (sample1 + sample2 + sample3) * SAFETY_FACTOR / 3.0f;
                 
-                // Суммируем сэмплы трех волн
-                float combinedSample = sample1 + sample2 + sample3;
+                // Мягкое ограничение амплитуды
+                combinedSample = SoftClip(combinedSample);
                 
                 buffer[offset + i] = combinedSample;
             }
 
-            // Вызываем событие генерации сэмплов
             OnSampleGenerated?.Invoke(buffer.Take(sampleCount).ToArray());
-
-            return sampleCount; // Возвращаем количество сэмплов
+            return sampleCount;
         }
-        
-        private float GenerateWaveSample(Wave wave, double time)
+
+        private float GenerateWaveSample(Wave wave, ref double phase, double sampleRate)
         {
             float sample = 0;
+            double frequency = wave.Frequency;
+            float amplitude = wave.Amplitude;
+
             switch (wave.Type)
             {
                 case WaveType.Sine:
-                    // Генерация синусоидальной волны
-                    sample = wave.Amplitude * (float)Math.Sin(2 * Math.PI * wave.Frequency * time);
+                    sample = amplitude * (float)Math.Sin(phase);
                     break;
                 case WaveType.Square:
-                    // Генерация прямоугольной волны
-                    sample = wave.Amplitude * Math.Sign(Math.Sin(2 * Math.PI * wave.Frequency * time));
+                    sample = amplitude * (Math.Sin(phase) >= 0 ? 0.9f : -0.9f);
                     break;
                 case WaveType.Triangle:
-                    // Генерация треугольной волны
-                    sample = wave.Amplitude * (float)(2 * Math.Abs(2 * ((time * wave.Frequency) % 1) - 1) - 1);
+                    sample = amplitude * (float)(2.0 * (Math.Abs(phase / Math.PI - 
+                        Math.Floor(phase / Math.PI + 0.5)) - 0.5));
                     break;
             }
+
+            // Обновляем фазу
+            phase += 2.0 * Math.PI * frequency / sampleRate;
+            if (phase >= 2.0 * Math.PI)
+                phase -= 2.0 * Math.PI;
+
+            return sample;
+        }
+
+        private float SoftClip(float sample)
+        {
+            // Мягкое ограничение для предотвращения резких переходов
+            if (sample > 1.0f)
+                return 1.0f - (1.0f / (sample + 1.0f));
+            else if (sample < -1.0f)
+                return -1.0f + (1.0f / (-sample + 1.0f));
             return sample;
         }
     }
