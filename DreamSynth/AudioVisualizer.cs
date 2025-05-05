@@ -1,59 +1,103 @@
-﻿using OxyPlot; // Подключение библиотеки OxyPlot, которая используется для построения графиков
-using OxyPlot.Axes; // Подключение пространств имен, связанных с осями графиков в OxyPlot
-using OxyPlot.Series; // Подключение пространств имен, связанных с сериями данных в OxyPlot
+﻿using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using MathNet.Numerics;
+using MathNet.Numerics.IntegralTransforms;
+using MathNet.Numerics; // Для Complex32
+using System.Numerics; // Только если нужно где-то ещё (не используется в FFT)
 
-namespace DreamSynth // Определение пространства имен для проекта DreamSynth
+namespace DreamSynth
 {
-    public class AudioVisualizer // Определение публичного класса AudioVisualizer, который будет визуализировать аудио данные
+    public class AudioVisualizer
     {
-        private readonly PlotModel plotModel; // Поле для хранения модели графика OxyPlot
-        private readonly LineSeries lineSeries; // Поле для хранения серии данных линии
+        private readonly PlotModel timePlotModel;
+        private readonly PlotModel freqPlotModel;
+        private readonly LineSeries timeLineSeries;
+        private readonly LineSeries freqLineSeries;
 
-        // Конструктор класса AudioVisualizer, принимающий объект PlotModel в качестве параметра
-        public AudioVisualizer(PlotModel plotModel)
+        public AudioVisualizer(PlotModel timePlotModel, PlotModel freqPlotModel)
         {
-            this.plotModel = plotModel; // Инициализация plotModel
-            plotModel.Title = null; // Установка заголовка графика в null (без заголовка)
+            this.timePlotModel = timePlotModel;
+            this.freqPlotModel = freqPlotModel;
 
-            // Добавление горизонтальной оси (временной оси) к модели графика
-            plotModel.Axes.Add(new LinearAxis
+            // Настройка временного графика
+            timePlotModel.Title = null;
+            timePlotModel.Axes.Add(new LinearAxis
             {
-                Position = AxisPosition.Bottom, // Расположение оси внизу графика
-                Minimum = 0, // Минимальное значение оси
-                Maximum = 1000, // Максимальное значение оси
-                Title = "Время" // Заголовок оси
+                Position = AxisPosition.Bottom,
+                Minimum = 0,
+                Maximum = 1000,
+                Title = "Время"
+            });
+            timePlotModel.Axes.Add(new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                Minimum = -3,
+                Maximum = 3,
+                Title = "Амплитуда"
             });
 
-            // Добавление вертикальной оси (амплитудной оси) к модели графика
-            plotModel.Axes.Add(new LinearAxis
+            timeLineSeries = new LineSeries
             {
-                Position = AxisPosition.Left, // Расположение оси слева графика
-                Minimum = -3, // Минимальное значение оси
-                Maximum = 3, // Максимальное значение оси
-                Title = "Амплитуда" // Заголовок оси
-            });
-
-            // Инициализация lineSeries - объекта, представляющего серию данных линии
-            this.lineSeries = new LineSeries
-            {
-                Color = OxyColors.Blue, // Установка цвета линии в синий
-                LineStyle = LineStyle.Solid // Установка стиля линии как сплошной
+                Color = OxyColors.Blue,
+                LineStyle = LineStyle.Solid
             };
+            timePlotModel.Series.Add(timeLineSeries);
 
-            // Добавление серии данных линии к модели графика
-            plotModel.Series.Add(lineSeries);
+            // Настройка частотного графика
+            freqPlotModel.Title = null;
+            freqPlotModel.Axes.Add(new LinearAxis
+            {
+                Position = AxisPosition.Bottom,
+                Minimum = 0,
+                Maximum = 500,
+                Title = "Частота (Гц)"
+            });
+            freqPlotModel.Axes.Add(new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                Minimum = 0,
+                Maximum = 10,
+                Title = "Амплитуда"
+            });
+
+            freqLineSeries = new LineSeries
+            {
+                Color = OxyColors.Red,
+                LineStyle = LineStyle.Solid
+            };
+            freqPlotModel.Series.Add(freqLineSeries);
         }
 
-        // Метод для обновления графика новыми аудио данными
         public void Update(float[] audioData)
         {
-            lineSeries.Points.Clear(); // Очистка текущих точек данных серии
-            // Цикл по аудио данным для добавления каждой точки данных в серию линии
+            // Обновление временного графика
+            timeLineSeries.Points.Clear();
             for (int i = 0; i < audioData.Length; i++)
             {
-                lineSeries.Points.Add(new DataPoint(i, audioData[i])); // Добавление новой точки данных
+                timeLineSeries.Points.Add(new DataPoint(i, audioData[i]));
             }
-            plotModel.InvalidatePlot(true); // Обновление графика для отображения новых данных
+            timePlotModel.InvalidatePlot(true);
+
+            // Преобразование в Complex32[]
+            MathNet.Numerics.Complex32[] complexData = new MathNet.Numerics.Complex32[audioData.Length];
+            for (int i = 0; i < audioData.Length; i++)
+            {
+                complexData[i] = new MathNet.Numerics.Complex32(audioData[i], 0);
+            }
+
+            // Выполнение FFT
+            Fourier.Forward(complexData, FourierOptions.Matlab);
+
+            // Обновление частотного графика
+            freqLineSeries.Points.Clear();
+            int n = audioData.Length / 2; // Только первая половина спектра
+            for (int i = 0; i < n; i++)
+            {
+                float magnitude = complexData[i].Magnitude;
+                freqLineSeries.Points.Add(new DataPoint(i, magnitude));
+            }
+            freqPlotModel.InvalidatePlot(true);
         }
     }
 }

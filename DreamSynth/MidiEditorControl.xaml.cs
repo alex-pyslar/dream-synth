@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,12 +21,17 @@ namespace DreamSynth
         private Point mouseStartPosition;
         private double initialWidth;
         private const double noteHeight = 20;
-        private const double gridSize = 20;
+        private const double gridSize = 20; // Пикселей на единицу сетки (четвертная нота)
+        private double BPM { get; set; } = 120; // Темп в ударах в минуту
+        private double BeatsPerGridUnit { get; set; } = 1; // Одна единица сетки = одна четвертная нота
+        private double Interval => 60000.0 / (BPM * BeatsPerGridUnit); // Длительность единицы сетки в мс
 
         private Line PlaybackLine;
-        private static System.Windows.Threading.DispatcherTimer playbackTimer;
-        private double playbackPosition = 0; // Текущее положение воспроизведения
-
+        private System.Windows.Threading.DispatcherTimer playbackTimer;
+        private Stopwatch playbackStopwatch = new Stopwatch(); // Tracks precise playback time
+        private double playbackPosition = 0; // Current playback position in grid units
+        private HashSet<MidiNote> activeNotes = new HashSet<MidiNote>(); // Tracks currently playing notes
+        private double sequenceDuration = 0; // Total duration of the note sequence in grid units
 
         public MidiEditorControl()
         {
@@ -33,7 +40,7 @@ namespace DreamSynth
             NoteCanvas.Height = gridSize * 12;
             this.Loaded += MidiEditorControl_Loaded;
 
-            // Инициализация линии воспроизведения
+            // Initialize playback line
             PlaybackLine = new Line
             {
                 Stroke = Brushes.Red,
@@ -45,9 +52,9 @@ namespace DreamSynth
             };
             NoteCanvas.Children.Add(PlaybackLine);
 
-            // Инициализация таймера воспроизведения
+            // Initialize playback timer
             playbackTimer = new System.Windows.Threading.DispatcherTimer();
-            playbackTimer.Interval = TimeSpan.FromMilliseconds(1); // Интервал обновления (50 мс)
+            playbackTimer.Interval = TimeSpan.FromMilliseconds(10); // ~100 FPS for smoother animation
             playbackTimer.Tick += PlaybackTimer_Tick;
         }
 
@@ -90,7 +97,12 @@ namespace DreamSynth
                 NoteCanvas.Children.Add(line);
             }
 
-            NoteCanvas.Children.Add(PlaybackLine); // Добавляем линию воспроизведения поверх сетки
+            NoteCanvas.Children.Add(PlaybackLine); // Add playback line on top of grid
+
+            // Update sequence duration (include extra space after last note)
+            sequenceDuration = Notes.Any() 
+                ? Math.Max(Notes.Max(n => n.StartTime + n.Duration), NoteCanvas.ActualWidth / gridSize) 
+                : NoteCanvas.ActualWidth / gridSize;
 
             foreach (var note in Notes)
             {
@@ -102,7 +114,7 @@ namespace DreamSynth
         {
             var noteWidth = note.Duration * gridSize;
             var noteY = note.Pitch * gridSize;
-            noteY = RoundToGrid(noteY); // Применяем округление к сетке
+            noteY = RoundToGrid(noteY); // Snap to grid
 
             var rect = new Rectangle
             {
@@ -117,7 +129,7 @@ namespace DreamSynth
             rect.MouseLeftButtonDown += Note_MouseLeftButtonDown;
             rect.MouseRightButtonDown += Note_MouseRightButtonDown;
 
-            Canvas.SetLeft(rect, RoundToGrid(note.StartTime * gridSize)); // Округление для времени
+            Canvas.SetLeft(rect, RoundToGrid(note.StartTime * gridSize)); // Snap to grid for time
             Canvas.SetTop(rect, noteY);
 
             NoteCanvas.Children.Add(rect);
@@ -192,7 +204,7 @@ namespace DreamSynth
             {
                 var widthChange = mousePosition.X - mouseStartPosition.X;
                 var newWidth = RoundToGrid(initialWidth + widthChange);
-                var newDuration = Math.Max(0, newWidth / gridSize);
+                var newDuration = Math.Max(gridSize, newWidth) / gridSize; // Ensure minimum duration
                 SelectedNote.Duration = newDuration;
                 SelectedRectangle.Width = newWidth;
                 DrawGrid();
@@ -213,44 +225,125 @@ namespace DreamSynth
 
         private void PlaybackTimer_Tick(object sender, EventArgs e)
         {
-            // Увеличиваем положение воспроизведения на основе скорости и интервала
-            playbackPosition += gridSize * (playbackTimer.Interval.TotalMilliseconds / (MainWindow.interval));
-            
-            // Рассчитываем текущее положение линии воспроизведения
-            double lineX = RoundToGrid(playbackPosition * gridSize);
-    
-            // Проверяем, не вышла ли линия за пределы холста
-            if (lineX >= NoteCanvas.ActualWidth)
+            // Получаем текущее время воспроизведения в миллисекундах и преобразуем в единицы сетки
+            double elapsedMs = playbackStopwatch.ElapsedMilliseconds;
+            playbackPosition = elapsedMs / Interval; // Grid units
+            double lineX = playbackPosition * gridSize;
+
+            // Отладочный вывод для проверки синхронизации
+            Console.WriteLine($"Elapsed: {elapsedMs:F2} ms, PlaybackPosition: {playbackPosition:F2}, LineX: {lineX:F2}");
+
+            // Подсвечиваем активные ноты и обновляем визуализацию
+            foreach (var child in NoteCanvas.Children.OfType<Rectangle>())
+            {
+                var note = child.Tag as MidiNote;
+                if (note != null)
+                {
+                    bool isPlaying = activeNotes.Contains(note);
+                    child.Fill = isPlaying ? Brushes.Green : Brushes.Blue; // Подсветка активных нот
+                    child.Stroke = isPlaying ? Brushes.Yellow : Brushes.Black; // Желтая рамка для активных нот
+                    child.StrokeThickness = isPlaying ? 2 : 1;
+                }
+            }
+
+            // Проверяем, какие ноты нужно воспроизвести или остановить
+            foreach (var note in Notes)
+            {
+                double noteStart = note.StartTime;
+                double noteEnd = note.StartTime + note.Duration;
+
+                // Если позиция воспроизведения достигла начала ноты
+                if (!activeNotes.Contains(note) && playbackPosition >= noteStart && playbackPosition < noteEnd)
+                {
+                    PlayNote(note);
+                    activeNotes.Add(note);
+                }
+                // Если позиция воспроизведения прошла конец ноты
+                else if (activeNotes.Contains(note) && playbackPosition >= noteEnd)
+                {
+                    StopNote(note);
+                    activeNotes.Remove(note);
+                }
+            }
+
+            // Проверяем, достигло ли воспроизведение конца последовательности
+            if (playbackPosition >= sequenceDuration)
             {
                 StopPlayback();
-                StartPlayback();
+                StartPlayback(); // Зацикливаем воспроизведение
             }
             else
             {
-                PlaybackLine.X1 += lineX;
-                PlaybackLine.X2 += lineX;
+                // Обновляем позицию линии воспроизведения
+                PlaybackLine.X1 = lineX;
+                PlaybackLine.X2 = lineX;
             }
+        }
+
+        private void PlayNote(MidiNote note)
+        {
+            // Вычисляем длительность ноты в миллисекундах для отладки
+            double noteDurationMs = note.Duration * Interval;
+            Console.WriteLine($"Playing note: Pitch={note.Pitch}, StartTime={note.StartTime}, Duration={note.Duration}, DurationMs={noteDurationMs:F2}, ElapsedMs={playbackStopwatch.ElapsedMilliseconds:F2}");
+
+            // Для MIDI-синтезатора (например, NAudio или DryWetMidi):
+            // - Отправить NoteOn
+            // Пример: midiOut.Send(MidiMessage.StartNote(note.Pitch + 60, 127, 0).RawData);
+        }
+
+        private void StopNote(MidiNote note)
+        {
+            Console.WriteLine($"Stopping note: Pitch={note.Pitch}, ElapsedMs={playbackStopwatch.ElapsedMilliseconds:F2}");
+
+            // Для MIDI-синтезатора:
+            // - Отправить NoteOff
+            // Пример: midiOut.Send(MidiMessage.StopNote(note.Pitch + 60, 0, 0).RawData);
         }
 
         public void StartPlayback()
         {
+            // Сбрасываем состояние воспроизведения
             playbackPosition = 0;
+            activeNotes.Clear();
+            playbackStopwatch.Restart();
+            PlaybackLine.X1 = 0;
+            PlaybackLine.X2 = 0;
+
+            // Обновляем длительность последовательности
+            sequenceDuration = Notes.Any() 
+                ? Math.Max(Notes.Max(n => n.StartTime + n.Duration), NoteCanvas.ActualWidth / gridSize) 
+                : NoteCanvas.ActualWidth / gridSize;
+
             playbackTimer.Start();
         }
 
         public void StopPlayback()
         {
             playbackTimer.Stop();
+            playbackStopwatch.Stop();
+            foreach (var note in activeNotes.ToList())
+            {
+                StopNote(note);
+                activeNotes.Remove(note);
+            }
             playbackPosition = 0;
             PlaybackLine.X1 = 0;
             PlaybackLine.X2 = 0;
+
+            // Сбрасываем подсветку нот
+            foreach (var child in NoteCanvas.Children.OfType<Rectangle>())
+            {
+                child.Fill = Brushes.Blue;
+                child.Stroke = Brushes.Black;
+                child.StrokeThickness = 1;
+            }
         }
     }
 
     public class MidiNote
     {
         public int Pitch { get; set; }
-        public double StartTime { get; set; }
-        public double Duration { get; set; }
+        public double StartTime { get; set; } // В единицах сетки (четвертные ноты)
+        public double Duration { get; set; } // В единицах сетки (четвертные ноты)
     }
 }

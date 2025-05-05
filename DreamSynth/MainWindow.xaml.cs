@@ -34,10 +34,14 @@ namespace DreamSynth
 
         private void InitializeAudioVisualizer()
         {
-            var plotModel = new PlotModel { Title = "Audio Signal" };
-            audioVisualizer = new AudioVisualizer(plotModel);
-            plotView.Model = plotModel;
+            var timeModel = new PlotModel { Title = "Временной сигнал" };
+            var freqModel = new PlotModel { Title = "Частотный спектр" };
+            audioVisualizer = new AudioVisualizer(timeModel, freqModel);
+
+            TimePlotView.Model = timeModel;
+            FreqPlotView.Model = freqModel;
         }
+
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
