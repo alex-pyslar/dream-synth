@@ -103,6 +103,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AudioVisualizer.cs" />
+    <Compile Include="Equalizer.cs" />
+    <Compile Include="EqualizerControl.xaml.cs">
+      <DependentUpon>EqualizerControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MidiEditorControl.xaml.cs">
       <DependentUpon>MidiEditorControl.xaml</DependentUpon>
     </Compile>
@@ -111,6 +115,7 @@
     <Compile Include="WaveGeneratorControl.xaml.cs">
       <DependentUpon>WaveGeneratorControl.xaml</DependentUpon>
     </Compile>
+    <Page Include="EqualizerControl.xaml" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

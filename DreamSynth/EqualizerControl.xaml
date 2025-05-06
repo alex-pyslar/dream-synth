@@ -1,0 +1,40 @@
+<UserControl x:Class="DreamSynth.EqualizerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="150" d:DesignWidth="300">
+    <StackPanel Orientation="Vertical" Margin="10">
+        <TextBlock Text="Equalizer" FontWeight="Bold" Margin="0,0,0,10"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Low Gain:" Margin="0,0,10,5"/>
+            <Slider x:Name="LowGainSlider" Grid.Row="0" Grid.Column="1" Minimum="-12" Maximum="12" Value="0" Width="150" ValueChanged="Slider_ValueChanged"/>
+            <TextBlock x:Name="LowGainTextBlock" Grid.Row="0" Grid.Column="2" Text="0.0 dB" Margin="10,0,0,5"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Mid Gain:" Margin="0,0,10,5"/>
+            <Slider x:Name="MidGainSlider" Grid.Row="1" Grid.Column="1" Minimum="-12" Maximum="12" Value="0" Width="150" ValueChanged="Slider_ValueChanged"/>
+            <TextBlock x:Name="MidGainTextBlock" Grid.Row="1" Grid.Column="2" Text="0.0 dB" Margin="10,0,0,5"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="High Gain:" Margin="0,0,10,5"/>
+            <Slider x:Name="HighGainSlider" Grid.Row="2" Grid.Column="1" Minimum="-12" Maximum="12" Value="0" Width="150" ValueChanged="Slider_ValueChanged"/>
+            <TextBlock x:Name="HighGainTextBlock" Grid.Row="2" Grid.Column="2" Text="0.0 dB" Margin="10,0,0,5"/>
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Distortion:" Margin="0,0,10,5"/>
+            <Slider x:Name="DistortionSlider" Grid.Row="3" Grid.Column="1" Minimum="0" Maximum="1" Value="0" Width="150" ValueChanged="Slider_ValueChanged"/>
+            <TextBlock x:Name="DistortionTextBlock" Grid.Row="3" Grid.Column="2" Text="0.0" Margin="10,0,0,5"/>
+        </Grid>
+    </StackPanel>
+</UserControl>

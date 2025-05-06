@@ -11,12 +11,7 @@ namespace DreamSynth
     {
         public static int counter = 0;
         
-        public static WaveGenerator WaveGenerator = new WaveGenerator(new Wave[]
-        {
-            new Wave(WaveType.Sine, 440, 0.5f),
-            new Wave(WaveType.Sine, 440, 0.5f),
-            new Wave(WaveType.Sine, 440, 0.5f)
-        });
+        public static WaveGenerator WaveGenerator;
 
         // Флаг для отслеживания, выполняется ли обновление
         private bool _isUpdating = false;
@@ -36,6 +31,16 @@ namespace DreamSynth
             Octave1ComboBox.SelectionChanged += ComboBox_SelectionChanged;
             Octave2ComboBox.SelectionChanged += ComboBox_SelectionChanged;
             Octave3ComboBox.SelectionChanged += ComboBox_SelectionChanged;
+        }
+
+        public void InitializeWaveGenerator(Equalizer equalizer)
+        {
+            WaveGenerator = new WaveGenerator(new Wave[]
+            {
+                new Wave(WaveType.Sine, 440, 0.5f),
+                new Wave(WaveType.Sine, 440, 0.5f),
+                new Wave(WaveType.Sine, 440, 0.5f)
+            }, equalizer);
         }
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -91,7 +96,6 @@ namespace DreamSynth
                 await Task.Delay((int)MainWindow.interval);
             }
         }
-
 
         private WaveType GetWaveTypeFromComboBox(int waveIndex)
         {

@@ -24,6 +24,7 @@ namespace DreamSynth
             InitializeAudioVisualizer();
 
             waveOut = new WaveOutEvent();
+            WaveGeneratorControl.InitializeWaveGenerator(EqualizerControl.Equalizer);
             waveOut.Init(WaveGeneratorControl.WaveGenerator);
 
             WaveGeneratorControl.WaveGenerator.OnSampleGenerated += samples =>
@@ -41,7 +42,6 @@ namespace DreamSynth
             TimePlotView.Model = timeModel;
             FreqPlotView.Model = freqModel;
         }
-
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {

@@ -9,10 +9,12 @@ namespace DreamSynth
         public Wave[] Waves = new Wave[3];
         private double phase1, phase2, phase3; // Фазы для каждой волны
         private const float SAFETY_FACTOR = 0.8f; // Коэффициент для предотвращения клиппинга
+        private readonly Equalizer equalizer;
 
-        public WaveGenerator(Wave[] waves)
+        public WaveGenerator(Wave[] waves, Equalizer equalizer)
         {
             Waves = waves;
+            this.equalizer = equalizer;
             phase1 = phase2 = phase3 = 0.0;
         }
 
@@ -35,6 +37,9 @@ namespace DreamSynth
                 
                 // Мягкое ограничение амплитуды
                 combinedSample = SoftClip(combinedSample);
+                
+                // Применяем эквалайзер и дисторшн
+                combinedSample = equalizer.ProcessSample(combinedSample);
                 
                 buffer[offset + i] = combinedSample;
             }
