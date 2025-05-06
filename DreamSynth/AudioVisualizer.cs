@@ -1,10 +1,9 @@
-﻿using OxyPlot;
+﻿using System;
+using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using MathNet.Numerics;
 using MathNet.Numerics.IntegralTransforms;
-using MathNet.Numerics; // Для Complex32
-using System.Numerics; // Только если нужно где-то ещё (не используется в FFT)
 
 namespace DreamSynth
 {
@@ -50,14 +49,14 @@ namespace DreamSynth
             {
                 Position = AxisPosition.Bottom,
                 Minimum = 0,
-                Maximum = 500,
+                Maximum = 5000, // Ограничиваем до 5 кГц
                 Title = "Частота (Гц)"
             });
             freqPlotModel.Axes.Add(new LinearAxis
             {
                 Position = AxisPosition.Left,
                 Minimum = 0,
-                Maximum = 10,
+                Maximum = 10, // Для логарифмического масштаба амплитуд
                 Title = "Амплитуда"
             });
 
@@ -69,7 +68,7 @@ namespace DreamSynth
             freqPlotModel.Series.Add(freqLineSeries);
         }
 
-        public void Update(float[] audioData)
+        public void Update(float[] audioData, int sampleRate = 44100)
         {
             // Обновление временного графика
             timeLineSeries.Points.Clear();
@@ -92,11 +91,31 @@ namespace DreamSynth
             // Обновление частотного графика
             freqLineSeries.Points.Clear();
             int n = audioData.Length / 2; // Только первая половина спектра
-            for (int i = 0; i < n; i++)
+            float frequencyStep = sampleRate / (float)audioData.Length; // Шаг частоты в Гц
+            float maxFrequency = 5000; // Ограничиваем до 5 кГц
+            int maxIndex = (int)(maxFrequency / frequencyStep); // Индекс для ограничения частот
+            maxIndex = Math.Min(maxIndex, n); // Не превышаем половину спектра
+
+            // Нормализация амплитуд
+            float maxMagnitude = 0;
+            for (int i = 0; i < maxIndex; i++)
             {
                 float magnitude = complexData[i].Magnitude;
-                freqLineSeries.Points.Add(new DataPoint(i, magnitude));
+                if (magnitude > maxMagnitude) maxMagnitude = magnitude;
             }
+
+            for (int i = 0; i < maxIndex; i++)
+            {
+                float frequency = i * frequencyStep; // Частота в Гц
+                float magnitude = complexData[i].Magnitude;
+                // Логарифмическое масштабирование амплитуды для лучшей видимости
+                float scaledMagnitude = maxMagnitude > 0 ? 10 * (float)Math.Log10(1 + magnitude / maxMagnitude) : 0;
+                freqLineSeries.Points.Add(new DataPoint(frequency, scaledMagnitude));
+            }
+
+            // Настройка осей частотного графика
+            freqPlotModel.Axes[0].Maximum = maxFrequency; // Ограничение по частоте
+            freqPlotModel.Axes[1].Maximum = 10; // Для масштабированных амплитуд
             freqPlotModel.InvalidatePlot(true);
         }
     }
