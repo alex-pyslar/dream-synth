@@ -77,7 +77,8 @@ namespace DreamSynth
 
         private void UpdateInterval()
         {
-            Interval = 115000.0 / (BPM * BeatsPerGridUnit); // Duration of one grid unit in ms
+            Interval = 112000.0 / BPM;
+            //Interval = 112000.0 / (BPM * BeatsPerGridUnit); // Duration of one grid unit in ms
             Console.WriteLine($"BPM updated to {BPM}, Interval: {Interval:F2} ms");
         }
 

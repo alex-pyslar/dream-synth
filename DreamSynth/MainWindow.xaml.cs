@@ -61,6 +61,7 @@ namespace DreamSynth
         {
             bpm = (int)e.NewValue;
             interval = 1200.0 / bpm;
+            MidiEditorControl.BPM = bpm;
         }
     }
 }
