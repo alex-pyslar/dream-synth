@@ -4,20 +4,17 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:dreamSynth="clr-namespace:DreamSynth"
         Icon="sticker.ico"
-        Title="DreamSynth" Height="720" Width="1280">
-
+        Title="DreamSynth" Height="700" Width="750">
     <Grid Margin="2.5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> <!-- Top row for synth/effects and visualizers -->
-            <RowDefinition Height="*"/>    <!-- Middle row for MIDI editor -->
-            <RowDefinition Height="Auto"/> <!-- Bottom row for control buttons -->
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/> <!-- Left column for synth/effects -->
-            <ColumnDefinition Width="*"/>    <!-- Right column for visualizers -->
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
-        <!-- Top-left: Synthesizer and Effects -->
         <Grid Grid.Row="0" Grid.Column="0" Margin="2.5">
             <StackPanel Orientation="Vertical">
                 <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,5">
@@ -28,12 +25,10 @@
                 </Border>
             </StackPanel>
         </Grid>
-
-        <!-- Top-right: Visualizers -->
         <Grid Grid.Row="0" Grid.Column="1" Margin="2.5">
             <Grid.RowDefinitions>
-                <RowDefinition Height="200"/> <!-- Fixed height for TimePlotView -->
-                <RowDefinition Height="200"/> <!-- Fixed height for FreqPlotView -->
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Border Grid.Row="0" BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="5" Margin="0,0,0,5">
                 <oxy:PlotView x:Name="TimePlotView" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
@@ -42,21 +37,13 @@
                 <oxy:PlotView x:Name="FreqPlotView" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </Border>
         </Grid>
-
-        <!-- Middle: MIDI Editor (spanning full width) -->
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="2.5">
             <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,5">
                 <dreamSynth:MidiEditorControl x:Name="MidiEditorControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
             </Border>
         </Grid>
-
-        <!-- Bottom: Control Buttons and BPM Slider -->
-        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="20">
-            <Button Name="PlayButton" Content="Старт" Click="PlayButton_Click" Width="100" Margin="0,0,10,0"/>
-            <Button Name="StopButton" Content="Стоп" Click="StopButton_Click" Width="100" Margin="0,0,10,0"/>
-            <TextBlock Text="BPM:" VerticalAlignment="Center" Margin="10,0"/>
-            <Slider Name="BpmSlider" Minimum="60" Maximum="240" Value="120" ValueChanged="BpmSlider_ValueChanged" Width="200"/>
-            <TextBlock Name="BpmValue" Text="{Binding ElementName=BpmSlider, Path=Value, StringFormat={}{0:F1}}" VerticalAlignment="Center" Margin="10,0"/>
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="20" Visibility="Collapsed">
+            <Slider Name="BpmSlider" Minimum="60" Maximum="240" Value="120" ValueChanged="BpmSlider_ValueChanged" Width="200" Visibility="Collapsed"/>
         </StackPanel>
     </Grid>
 </Window>

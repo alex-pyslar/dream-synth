@@ -4,11 +4,9 @@
              Height="240" Width="700">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50" /> <!-- Колонка для названий нот -->
-            <ColumnDefinition Width="*" />  <!-- Колонка для NoteCanvas -->
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-
-        <!-- Панель для названий нот -->
         <StackPanel Grid.Column="0" VerticalAlignment="Stretch" Background="LightGray">
             <TextBlock Text="B" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
             <TextBlock Text="A#" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
@@ -23,8 +21,6 @@
             <TextBlock Text="C#" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
             <TextBlock Text="C" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </StackPanel>
-
-        <!-- Канвас для редактора нот -->
         <Canvas Name="NoteCanvas" Background="LightGray" 
                 Width="640" Height="120"
                 HorizontalAlignment="Left" 

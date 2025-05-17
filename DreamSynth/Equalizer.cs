@@ -10,10 +10,12 @@ namespace DreamSynth
         private readonly Distortion distortion;
         private readonly int sampleRate;
 
-        public float LowGain { get; set; } // dB
-        public float MidGain { get; set; } // dB
-        public float HighGain { get; set; } // dB
-        public float DistortionAmount { get; set; } // 0 to 1
+        public bool IsModulationEnabled;
+
+        public float LowGain { get; set; }
+        public float MidGain { get; set; } 
+        public float HighGain { get; set; }
+        public float DistortionAmount { get; set; }
 
         public Equalizer(int sampleRate)
         {
@@ -22,26 +24,22 @@ namespace DreamSynth
             midPeak = new BiquadFilter();
             highShelf = new BiquadFilter();
             distortion = new Distortion();
-            UpdateFilters();
+            UpdateFilters(false);
         }
 
-        public void UpdateFilters()
+        public void UpdateFilters(bool isModulationEnabled)
         {
-            // Low shelf: 200 Hz, Q=0.7
             lowShelf.SetLowShelf(200.0f, sampleRate, LowGain, 0.7f);
-            // Mid peak: 1000 Hz, Q=1.0
             midPeak.SetPeaking(1000.0f, sampleRate, MidGain, 1.0f);
-            // High shelf: 5000 Hz, Q=0.7
             highShelf.SetHighShelf(5000.0f, sampleRate, HighGain, 0.7f);
+            IsModulationEnabled = isModulationEnabled;
         }
 
         public float ProcessSample(float sample)
         {
-            // Apply EQ bands
             sample = lowShelf.Process(sample);
             sample = midPeak.Process(sample);
             sample = highShelf.Process(sample);
-            // Apply distortion
             sample = distortion.Process(sample, DistortionAmount);
             return sample;
         }
@@ -133,8 +131,7 @@ namespace DreamSynth
     {
         public float Process(float sample, float amount)
         {
-            // Hyperbolic tangent distortion
-            float gain = amount * 10.0f; // Scale 0-1 to 0-10 for noticeable effect
+            float gain = amount * 10.0f;
             return (float)Math.Tanh(sample * gain) / gain;
         }
     }

@@ -12,18 +12,15 @@ namespace DreamSynth
         public static int counter = 0;
         
         public static WaveGenerator WaveGenerator;
-
-        // Флаг для отслеживания, выполняется ли обновление
+        
         private bool _isUpdating = false;
 
         public WaveGeneratorControl()
         {
             InitializeComponent();
-
-            // Привязка событий изменения значений слайдеров к методам-обработчикам
+            
             AmplitudeSlider.ValueChanged += Slider_ValueChanged;
 
-            // Привязка событий изменения выбранного элемента ComboBox к методам-обработчикам
             WaveType1ComboBox.SelectionChanged += ComboBox_SelectionChanged;
             WaveType2ComboBox.SelectionChanged += ComboBox_SelectionChanged;
             WaveType3ComboBox.SelectionChanged += ComboBox_SelectionChanged;
@@ -46,12 +43,12 @@ namespace DreamSynth
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             AmplitudeTextBlock.Text = AmplitudeSlider.Value.ToString("F1");
-            Update(); // Обновление параметров генерируемой волны
+            Update();
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Update(); // Обновление параметров генерируемой волны
+            Update();
         }
 
         public async void Update()
@@ -64,7 +61,7 @@ namespace DreamSynth
                 var notes = MidiEditorControl.Notes.ToList();
                 counter++;
 
-                if (counter > 1600) counter = 0; // Сброс счётчика
+                if (counter > 1600) counter = 0;
 
                 var notesToPlay = notes
                     .Where(note => counter >= note.StartTime * 50 && counter < (note.StartTime + note.Duration) * 50)
@@ -91,8 +88,6 @@ namespace DreamSynth
                         wave.Set(WaveType.Sine, 0, 0, 0);
                     }
                 }
-
-                // Рассчитываем задержку на основе BPM
                 await Task.Delay((int)MainWindow.interval);
             }
         }

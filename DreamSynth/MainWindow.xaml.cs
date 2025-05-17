@@ -15,13 +15,11 @@ namespace DreamSynth
         public MainWindow()
         {
             InitializeComponent();
-
-            // Устанавливаем значение BPM по умолчанию
             bpm = 120;
-
-            BpmSlider.ValueChanged += BpmSlider_ValueChanged;
-
             InitializeAudioVisualizer();
+            
+            EqualizerControl.PlayBtn.Click += PlayButton_Click;
+            EqualizerControl.StopBtn.Click += StopButton_Click;
 
             waveOut = new WaveOutEvent();
             WaveGeneratorControl.InitializeWaveGenerator(EqualizerControl.Equalizer);

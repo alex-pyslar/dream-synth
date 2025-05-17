@@ -21,11 +21,10 @@ namespace DreamSynth
         private Point mouseStartPosition;
         private double initialWidth;
         private const double noteHeight = 20;
-        private const double gridSize = 20; // Pixels per grid unit (quarter note)
-        private double _bpm = 120; // Tempo in beats per minute
-        private const double BeatsPerGridUnit = 1; // One grid unit = one quarter note
-
-        // Public BPM property with validation
+        private const double gridSize = 20;
+        private double _bpm = 120;
+        private const double BeatsPerGridUnit = 1;
+        
         public double BPM
         {
             get => _bpm;
@@ -38,14 +37,14 @@ namespace DreamSynth
             }
         }
 
-        private double Interval { get; set; } // Duration of one grid unit in ms
+        private double Interval { get; set; }
 
         private Line PlaybackLine;
         private System.Windows.Threading.DispatcherTimer playbackTimer;
         private Stopwatch playbackStopwatch = new Stopwatch();
-        private double playbackPosition = 0; // Current playback position in grid units
+        private double playbackPosition = 0;
         private HashSet<MidiNote> activeNotes = new HashSet<MidiNote>();
-        private double sequenceDuration = 0; // Total duration in grid units
+        private double sequenceDuration = 0;
 
         public MidiEditorControl()
         {
@@ -53,11 +52,8 @@ namespace DreamSynth
             NoteCanvas.Width = 640;
             NoteCanvas.Height = gridSize * 12;
             this.Loaded += MidiEditorControl_Loaded;
-
-            // Initialize Interval based on initial BPM
             UpdateInterval();
-
-            // Initialize playback line
+            
             PlaybackLine = new Line
             {
                 Stroke = Brushes.Red,
@@ -68,18 +64,15 @@ namespace DreamSynth
                 Y2 = NoteCanvas.Height
             };
             NoteCanvas.Children.Add(PlaybackLine);
-
-            // Initialize playback timer
+            
             playbackTimer = new System.Windows.Threading.DispatcherTimer();
-            playbackTimer.Interval = TimeSpan.FromMilliseconds(10); // ~100 FPS
+            playbackTimer.Interval = TimeSpan.FromMilliseconds(10);
             playbackTimer.Tick += PlaybackTimer_Tick;
         }
 
         private void UpdateInterval()
         {
             Interval = 112000.0 / BPM;
-            //Interval = 112000.0 / (BPM * BeatsPerGridUnit); // Duration of one grid unit in ms
-            Console.WriteLine($"BPM updated to {BPM}, Interval: {Interval:F2} ms");
         }
 
         private void MidiEditorControl_Loaded(object sender, RoutedEventArgs e)
@@ -248,20 +241,14 @@ namespace DreamSynth
 
         private void PlaybackTimer_Tick(object sender, EventArgs e)
         {
-            // Calculate playback position in grid units
             double elapsedMs = playbackStopwatch.ElapsedMilliseconds;
-            playbackPosition = elapsedMs / Interval; // Grid units
-            double lineX = playbackPosition * gridSize; // Pixels
-
-            // Debug output to track timing
+            playbackPosition = elapsedMs / Interval;
+            double lineX = playbackPosition * gridSize;
+            
             double expectedLineX = (elapsedMs / Interval) * gridSize;
-            Console.WriteLine($"Elapsed: {elapsedMs:F2} ms, PlaybackPosition: {playbackPosition:F3} units, LineX: {lineX:F2} px, ExpectedLineX: {expectedLineX:F2} px, BPM: {BPM}, Interval: {Interval:F2} ms");
-
-            // Small visual lookahead for note highlighting (in grid units)
-            const double visualLookahead = 0.05; // Highlight notes slightly before playback line reaches them
-            const double tolerance = 0.02; // Tight tolerance for precise synchronization
-
-            // Update note visuals and playback in a single pass
+            const double visualLookahead = 0.05;
+            const double tolerance = 0.02;
+            
             foreach (var child in NoteCanvas.Children.OfType<Rectangle>())
             {
                 var note = child.Tag as MidiNote;
@@ -269,14 +256,12 @@ namespace DreamSynth
 
                 double noteStart = note.StartTime;
                 double noteEnd = note.StartTime + note.Duration;
-
-                // Determine if the note should be playing and highlighted
+                
                 bool shouldBePlaying = playbackPosition >= noteStart - tolerance &&
                                       playbackPosition < noteEnd + tolerance;
                 bool shouldBeHighlighted = playbackPosition >= noteStart - visualLookahead &&
                                           playbackPosition < noteEnd + tolerance;
-
-                // Update playback state
+                
                 if (shouldBePlaying && !activeNotes.Contains(note))
                 {
                     PlayNote(note);
@@ -287,22 +272,19 @@ namespace DreamSynth
                     StopNote(note);
                     activeNotes.Remove(note);
                 }
-
-                // Update visuals
+                
                 child.Fill = shouldBeHighlighted ? Brushes.Green : Brushes.Blue;
                 child.Stroke = shouldBeHighlighted ? Brushes.Yellow : Brushes.Black;
                 child.StrokeThickness = shouldBeHighlighted ? 2 : 1;
             }
-
-            // Check if playback reached the end
+            
             if (playbackPosition >= sequenceDuration)
             {
                 StopPlayback();
-                StartPlayback(); // Loop playback
+                StartPlayback();
             }
             else
             {
-                // Update playback line position
                 PlaybackLine.X1 = lineX;
                 PlaybackLine.X2 = lineX;
             }
@@ -313,20 +295,12 @@ namespace DreamSynth
             double noteStartMs = note.StartTime * Interval;
             double noteDurationMs = note.Duration * Interval;
             double currentTimeMs = playbackPosition * Interval;
-            Console.WriteLine($"Playing note: Pitch={note.Pitch}, StartTime={note.StartTime:F3} ({noteStartMs:F2} ms), Duration={note.Duration:F3} ({noteDurationMs:F2} ms), CurrentTime={currentTimeMs:F2} ms, ElapsedMs={playbackStopwatch.ElapsedMilliseconds:F2}");
-
-            // Placeholder for MIDI NoteOn
-            // Example: midiOut.Send(MidiMessage.StartNote(note.Pitch + 60, 127, 0).RawData);
         }
 
         private void StopNote(MidiNote note)
         {
             double noteEndMs = (note.StartTime + note.Duration) * Interval;
             double currentTimeMs = playbackPosition * Interval;
-            Console.WriteLine($"Stopping note: Pitch={note.Pitch}, EndTime={(note.StartTime + note.Duration):F3} ({noteEndMs:F2} ms), CurrentTime={currentTimeMs:F2} ms, ElapsedMs={playbackStopwatch.ElapsedMilliseconds:F2}");
-
-            // Placeholder for MIDI NoteOff
-            // Example: midiOut.Send(MidiMessage.StopNote(note.Pitch + 60, 0, 0).RawData);
         }
 
         public void StartPlayback()
@@ -342,7 +316,6 @@ namespace DreamSynth
                 : NoteCanvas.ActualWidth / gridSize;
 
             playbackTimer.Start();
-            Console.WriteLine($"Playback started: BPM={BPM}, Interval={Interval:F2} ms, SequenceDuration={sequenceDuration:F3} units");
         }
 
         public void StopPlayback()
@@ -364,15 +337,13 @@ namespace DreamSynth
                 child.Stroke = Brushes.Black;
                 child.StrokeThickness = 1;
             }
-
-            Console.WriteLine("Playback stopped");
         }
     }
 
     public class MidiNote
     {
         public int Pitch { get; set; }
-        public double StartTime { get; set; } // In grid units (quarter notes)
-        public double Duration { get; set; } // In grid units (quarter notes)
+        public double StartTime { get; set; }
+        public double Duration { get; set; }
     }
 }

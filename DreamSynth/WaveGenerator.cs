@@ -1,5 +1,6 @@
 ﻿using NAudio.Wave;
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DreamSynth
@@ -7,8 +8,8 @@ namespace DreamSynth
     public class WaveGenerator : WaveProvider32
     {
         public Wave[] Waves = new Wave[3];
-        private double phase1, phase2, phase3; // Фазы для каждой волны
-        private const float SAFETY_FACTOR = 0.8f; // Коэффициент для предотвращения клиппинга
+        private double phase1, phase2, phase3;
+        private const float SAFETY_FACTOR = 0.8f;
         private readonly Equalizer equalizer;
 
         public WaveGenerator(Wave[] waves, Equalizer equalizer)
@@ -23,24 +24,37 @@ namespace DreamSynth
         public override int Read(float[] buffer, int offset, int sampleCount)
         {
             int sampleRate = WaveFormat.SampleRate;
-            double sampleRateD = (double)sampleRate;
+            double sampleRateD = sampleRate;
 
             for (int i = 0; i < sampleCount; i++)
             {
-                // Генерируем сэмплы для каждой волны с использованием фаз
                 float sample1 = GenerateWaveSample(Waves[0], ref phase1, sampleRateD);
                 float sample2 = GenerateWaveSample(Waves[1], ref phase2, sampleRateD);
                 float sample3 = GenerateWaveSample(Waves[2], ref phase3, sampleRateD);
 
-                // Микшируем сэмплы с применением коэффициента безопасности
-                float combinedSample = (sample1 + sample2 + sample3) * SAFETY_FACTOR / 3.0f;
+                float combinedSample;
                 
-                // Мягкое ограничение амплитуды
+                if (equalizer.IsModulationEnabled)
+                {
+                    float modulationFactor = 1.0f + sample2 + sample3;
+                    combinedSample = sample1 * modulationFactor;
+
+                    float maxAmplitude = Math.Max(Math.Abs(sample1), 1.0f) * Math.Max(Math.Abs(modulationFactor), 1.0f);
+                    if (maxAmplitude > 0)
+                    {
+                        combinedSample = (combinedSample / maxAmplitude) * SAFETY_FACTOR;
+                    }
+                    else
+                    {
+                        combinedSample = 0;
+                    }
+                }
+                else
+                {
+                    combinedSample = (sample1 + sample2 + sample3) * SAFETY_FACTOR / 3.0f;
+                }
                 combinedSample = SoftClip(combinedSample);
-                
-                // Применяем эквалайзер и дисторшн
                 combinedSample = equalizer.ProcessSample(combinedSample);
-                
                 buffer[offset + i] = combinedSample;
             }
 
@@ -67,8 +81,6 @@ namespace DreamSynth
                         Math.Floor(phase / Math.PI + 0.5)) - 0.5));
                     break;
             }
-
-            // Обновляем фазу
             phase += 2.0 * Math.PI * frequency / sampleRate;
             if (phase >= 2.0 * Math.PI)
                 phase -= 2.0 * Math.PI;
@@ -78,7 +90,6 @@ namespace DreamSynth
 
         private float SoftClip(float sample)
         {
-            // Мягкое ограничение для предотвращения резких переходов
             if (sample > 1.0f)
                 return 1.0f - (1.0f / (sample + 1.0f));
             else if (sample < -1.0f)
