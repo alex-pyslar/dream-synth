@@ -131,8 +131,18 @@ namespace DreamSynth
     {
         public float Process(float sample, float amount)
         {
-            float gain = amount * 10.0f;
-            return (float)Math.Tanh(sample * gain) / gain;
+            float volume = 1.0f;
+            
+            float gain = 1.0f + (amount * 9.0f);
+            float amplifiedSample = sample * gain;
+            
+            float distortedSample = (float)Math.Tanh(amplifiedSample / volume) * volume;
+            
+            float maxAmplitude = volume;
+            if (distortedSample > maxAmplitude) distortedSample = maxAmplitude;
+            else if (distortedSample < -maxAmplitude) distortedSample = -maxAmplitude;
+
+            return distortedSample;
         }
     }
 }
