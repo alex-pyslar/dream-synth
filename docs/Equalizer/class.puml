@@ -1,0 +1,69 @@
+@startuml ClassDiagramEqualizer
+
+' ГОСТ-стиль: черно-белый, без теней
+skinparam monochrome true
+skinparam shadowing false
+skinparam classFontSize 12
+skinparam classFontName Arial
+skinparam classBorderThickness 1
+skinparam classBackgroundColor none
+skinparam classBorderColor black
+skinparam ArrowColor black
+
+title Диаграмма классов: Эквалайзер
+
+class Equalizer {
+  -lowShelf: BiquadFilter
+  -midPeak: BiquadFilter
+  -highShelf: BiquadFilter
+  -distortion: Distortion
+  -sampleRate: int
+  +IsModulationEnabled: bool
+  +LowGain: float
+  +MidGain: float
+  +HighGain: float
+  +DistortionAmount: float
+  +Equalizer(sampleRate: int)
+  +UpdateFilters(isModulationEnabled: bool)
+  +ProcessSample(sample: float): float
+}
+
+class BiquadFilter {
+  -a0: float
+  -a1: float
+  -a2: float
+  -b0: float
+  -b1: float
+  -b2: float
+  -x1: float
+  -x2: float
+  -y1: float
+  -y2: float
+  +SetLowShelf(frequency: float, sampleRate: float, gainDb: float, Q: float)
+  +SetPeaking(frequency: float, sampleRate: float, gainDb: float, Q: float)
+  +SetHighShelf(frequency: float, sampleRate: float, gainDb: float, Q: float)
+  -Normalize()
+  +Process(input: float): float
+}
+
+class Distortion {
+  +Process(sample: float, amount: float): float
+}
+
+class EqualizerControl {
+  -Equalizer: Equalizer
+  +IsModulationEnabled: bool
+  +PlayBtn: Button
+  +StopBtn: Button
+  +EqualizerControl()
+  -Slider_ValueChanged(sender: object, e: RoutedPropertyChangedEventArgs<double>)
+  -ModulationToggle_CheckedChanged(sender: object, e: RoutedEventArgs)
+}
+
+Equalizer o--> "1" BiquadFilter : lowShelf
+Equalizer o--> "1" BiquadFilter : midPeak
+Equalizer o--> "1" BiquadFilter : highShelf
+Equalizer o--> "1" Distortion : distortion
+EqualizerControl o--> "1" Equalizer : Equalizer
+
+@enduml

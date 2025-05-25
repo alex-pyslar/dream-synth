@@ -1,0 +1,39 @@
+@startuml SequenceDiagramEqualizerSettings
+
+' ГОСТ-стиль: черно-белый, без теней
+skinparam monochrome true
+skinparam shadowing false
+skinparam participantFontSize 12
+skinparam participantFontName Arial
+skinparam participantBorderThickness 1
+skinparam participantBackgroundColor none
+skinparam participantBorderColor black
+skinparam ArrowColor black
+
+title Диаграмма последовательности: Изменение параметров эквалайзера
+
+actor User
+participant ":Slider" as Slider
+participant ":EqualizerControl" as Control
+participant ":Equalizer" as Equalizer
+participant ":TextBlock" as TextBlock
+participant ":BiquadFilter" as BiquadFilter
+participant ":Distortion" as Distortion
+
+User -> Slider: Изменить значение (LowGain, MidGain, HighGain, DistortionAmount)
+Slider -> Control: Slider_ValueChanged(sender, e)
+Control -> Equalizer: Установить LowGain = LowGainSlider.Value
+Control -> Equalizer: Установить MidGain = MidGainSlider.Value
+Control -> Equalizer: Установить HighGain = HighGainSlider.Value
+Control -> Equalizer: Установить DistortionAmount = DistortionSlider.Value
+Control -> TextBlock: Установить LowGainTextBlock.Text = LowGainSlider.Value
+Control -> TextBlock: Установить MidGainTextBlock.Text = MidGainSlider.Value
+Control -> TextBlock: Установить HighGainTextBlock.Text = HighGainSlider.Value
+Control -> TextBlock: Установить DistortionTextBlock.Text = DistortionSlider.Value
+Control -> Equalizer: UpdateFilters(IsModulationEnabled)
+Equalizer -> BiquadFilter: SetLowShelf(100.0f, sampleRate, LowGain, 0.7f)
+Equalizer -> BiquadFilter: SetPeaking(1500.0f, sampleRate, MidGain, 1.0f)
+Equalizer -> BiquadFilter: SetHighShelf(2000.0f, sampleRate, HighGain, 0.7f)
+Equalizer -> Distortion: Обновить параметры (DistortionAmount)
+
+@enduml

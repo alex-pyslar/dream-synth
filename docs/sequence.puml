@@ -1,0 +1,55 @@
+@startuml SequenceDiagramPlayback
+
+' ГОСТ-стиль: черно-белый, без теней
+skinparam monochrome true
+skinparam shadowing false
+skinparam participantFontSize 12
+skinparam participantFontName Arial
+skinparam participantBorderThickness 1
+skinparam participantBackgroundColor none
+skinparam participantBorderColor black
+skinparam ArrowColor black
+
+title Диаграмма последовательности: Воспроизведение звука
+
+actor Пользователь
+participant ":MainWindow" as MainWindow
+participant ":WaveOutEvent" as WaveOut
+participant ":MidiEditorControl" as MidiEditor
+participant ":WaveGenerator" as WaveGenerator
+participant ":Equalizer" as Equalizer
+participant ":AudioVisualizer" as Visualizer
+
+Пользователь -> MainWindow: Нажать PlayButton
+MainWindow -> WaveOut: Play()
+MainWindow -> MidiEditor: StartPlayback()
+MainWindow -> WaveGenerator: counter = 0
+MidiEditor -> MidiEditor: playbackPosition = 0
+MidiEditor -> MidiEditor: activeNotes.Clear()
+MidiEditor -> MidiEditor: playbackStopwatch.Restart()
+MidiEditor -> MidiEditor: playbackTimer.Start()
+
+loop для каждого тика playbackTimer
+  MidiEditor -> MidiEditor: PlaybackTimer_Tick()
+  MidiEditor -> MidiEditor: Рассчитать playbackPosition
+  MidiEditor -> MidiEditor: Обновить PlaybackLine
+  MidiEditor -> MidiEditor: Проверить ноты в Notes
+  alt Нота должна воспроизводиться
+    MidiEditor -> MidiEditor: PlayNote(note)
+    MidiEditor -> WaveGenerator: Обновить Waves (Pitch, Type, Amplitude)
+    WaveGenerator -> WaveGenerator: GenerateWaveSample()
+    WaveGenerator -> Equalizer: ProcessSample(sample)
+    WaveGenerator -> Visualizer: OnSampleGenerated(samples)
+    Visualizer -> Visualizer: Update(samples)
+  else Нота должна остановиться
+    MidiEditor -> MidiEditor: StopNote(note)
+  end alt
+  MidiEditor -> MidiEditor: Проверить playbackPosition >= sequenceDuration
+  alt Последовательность завершена
+    MidiEditor -> MidiEditor: StopPlayback()
+    MainWindow -> WaveOut: Stop()
+    MainWindow -> WaveGenerator: counter = 0
+  end alt
+end loop
+
+@enduml

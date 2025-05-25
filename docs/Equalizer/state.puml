@@ -1,0 +1,25 @@
+@startuml StateDiagramEqualizerModulation
+
+' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
+skinparam monochrome true
+skinparam shadowing false
+skinparam stateFontSize 12
+skinparam stateFontName Arial
+skinparam stateBorderThickness 1
+skinparam stateBackgroundColor none
+skinparam stateBorderColor black
+skinparam stateCornerRadius 0
+skinparam defaultCornerRadius 0
+skinparam ArrowColor black
+skinparam style strictuml
+
+title Диаграмма состояний: Режимы эквалайзера
+
+[*] --> StaticMode
+
+StaticMode --> ModulationMode : ModulationToggle.Checked\n[UpdateFilters(true)]
+ModulationMode --> StaticMode : ModulationToggle.Unchecked\n[UpdateFilters(false)]
+ModulationMode : do / Применять модуляцию параметров
+StaticMode : do / Применять статические параметры
+
+@enduml

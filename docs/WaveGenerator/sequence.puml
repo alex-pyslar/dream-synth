@@ -1,0 +1,52 @@
+@startuml SequenceDiagram
+!define RECTANGLE participant
+
+' Настройка стиля для ГОСТ
+skinparam monochrome true
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam sequenceArrowFontSize 10
+skinparam sequenceParticipantFontSize 12
+skinparam sequenceParticipantFontName Arial
+
+title Диаграмма последовательности: Обновление волн
+
+RECTANGLE ":WaveGeneratorControl" as WGC
+RECTANGLE ":WaveGenerator" as WG
+RECTANGLE ":Wave" as W
+RECTANGLE ":MidiEditorControl" as MEC
+
+== Инициализация ==
+WGC -> MEC: Notes.ToList()
+activate WGC
+activate MEC
+MEC --> WGC: notes
+deactivate MEC
+
+== Проверка условий ==
+WGC -> WGC: counter++
+alt notesToPlay.Any()
+  WGC -> W: Set(type, octave, pitch, amplitude)
+  activate W
+  deactivate W
+else Нет активных нот
+  WGC -> W: Set(Sine, 0, 0, 0)
+  activate W
+  deactivate W
+end alt
+
+== Задержка ==
+WGC -> WGC: Task.Delay(MainWindow.interval)
+deactivate WGC
+
+note right: Цикл повторяется
+
+' Легенда
+legend right
+|= Символ | Описание |
+| -> | Синхронный вызов |
+| --> | Асинхронный вызов |
+| alt | Условный блок |
+endlegend
+
+@enduml

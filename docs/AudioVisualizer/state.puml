@@ -1,0 +1,25 @@
+@startuml StateDiagramAudioVisualizer
+
+' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
+skinparam monochrome true
+skinparam shadowing false
+skinparam stateFontSize 12
+skinparam stateFontName Arial
+skinparam stateBorderThickness 1
+skinparam stateBackgroundColor none
+skinparam stateBorderColor black
+skinparam stateCornerRadius 0
+skinparam defaultCornerRadius 0
+skinparam ArrowColor black
+skinparam style strictuml
+
+title Диаграмма состояний: AudioVisualizer
+
+[*] --> Idle
+
+Idle --> Visualizing : Update(audioData, sampleRate)
+Visualizing --> Idle : Завершение обновления
+Visualizing : do / Применить модуляцию\nПрименить искажение\nОбновить графики
+Idle : do / Ожидать данные
+
+@enduml

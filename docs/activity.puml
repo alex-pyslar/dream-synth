@@ -1,0 +1,82 @@
+@startuml ActivityDiagramPlayback
+
+' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
+skinparam monochrome true
+skinparam shadowing false
+skinparam activityFontSize 12
+skinparam activityFontName Arial
+skinparam activityBorderThickness 1
+skinparam activityBackgroundColor none
+skinparam activityBorderColor black
+skinparam activityCornerRadius 0
+skinparam defaultCornerRadius 0
+skinparam ArrowColor black
+skinparam ActivityDiamondCornerRadius 0
+skinparam style strictuml
+
+title Блок-схема алгоритма: Воспроизведение звука
+
+start
+
+:Пользователь нажимает кнопку Play;
+
+if (Коллекция Notes пуста?) then (да)
+  :Отобразить сообщение об ошибке;
+  stop
+else (нет)
+  :MainWindow вызывает waveOut.Play();
+  :MainWindow вызывает MidiEditorControl.StartPlayback();
+  :MainWindow сбрасывает WaveGenerator.counter = 0;
+  :MidiEditorControl сбрасывает playbackPosition = 0;
+  :MidiEditorControl очищает activeNotes;
+  :MidiEditorControl запускает playbackStopwatch;
+  :MidiEditorControl запускает playbackTimer;
+endif
+
+while (playbackTimer активен)
+  :MidiEditorControl рассчитывает playbackPosition;
+  :MidiEditorControl обновляет PlaybackLine;
+
+  while (Для каждой ноты в Notes) is (Есть ноты?)
+    :Вычислить noteStart = note.StartTime;
+    :Вычислить noteEnd = note.StartTime + note.Duration;
+    :Проверить shouldBePlaying = \nplaybackPosition >= noteStart - tolerance && \nplaybackPosition < noteEnd + tolerance;
+    if (shouldBePlaying && !activeNotes.Contains(note)) then (да)
+      :MidiEditorControl вызывает PlayNote(note);
+      :Добавить note в activeNotes;
+      :WaveGenerator обновляет Waves на основе note;
+      :WaveGenerator генерирует сэмплы;
+      :Equalizer обрабатывает сэмплы через ProcessSample();
+      :WaveGenerator вызывает OnSampleGenerated;
+      :AudioVisualizer обновляет визуализацию;
+    else if (!shouldBePlaying && activeNotes.Contains(note)) then (да)
+      :MidiEditorControl вызывает StopNote(note);
+      :Удалить note из activeNotes;
+    endif
+  end while (Нет нот)
+
+  if (playbackPosition >= sequenceDuration) then (да)
+    :MidiEditorControl вызывает StopPlayback();
+    :MainWindow вызывает waveOut.Stop();
+    :MainWindow сбрасывает WaveGenerator.counter = 0;
+    stop
+  endif
+endwhile
+
+:MainWindow вызывает waveOut.Stop();
+:MidiEditorControl вызывает StopPlayback();
+:MidiEditorControl останавливает playbackTimer;
+:MidiEditorControl останавливает playbackStopwatch;
+:MidiEditorControl очищает activeNotes;
+:MidiEditorControl сбрасывает PlaybackLine;
+
+stop
+
+legend right
+|= Символ | Описание |
+| : | Действие или условие (прямоугольник) |
+| if | Ветвление (описано текстом) |
+| while | Цикл |
+endlegend
+
+@enduml

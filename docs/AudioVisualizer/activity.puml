@@ -1,0 +1,69 @@
+@startuml ActivityDiagramUpdate
+
+' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
+skinparam monochrome true
+skinparam shadowing false
+skinparam activityFontSize 12
+skinparam activityFontName Arial
+skinparam activityBorderThickness 1
+skinparam activityBackgroundColor none
+skinparam activityBorderColor black
+skinparam activityCornerRadius 0
+skinparam defaultCornerRadius 0
+skinparam ArrowColor black
+skinparam ActivityDiamondCornerRadius 0
+skinparam style strictuml
+
+title Блок-схема алгоритма: Update
+
+start
+
+:Получить audioData и sampleRate;
+
+:Применить модуляцию (ApplyModulation);
+:Применить искажение (ApplyDistortion);
+
+' Обновление временной диаграммы
+:Очистить точки timeLineSeries;
+while (Для каждого sample в processedData) is (Есть данные?)
+    :Добавить точку (timeMs, sample);
+    :Обновить maxAmplitude;
+end while (Нет данных)
+:Установить TimeXAxis (Minimum, Maximum);
+:Установить TimeYAxis (Minimum, Maximum);
+:Обновить TimePlotModel (InvalidatePlot);
+
+' Подготовка данных для частотной диаграммы
+:Преобразовать processedData в Complex32[];
+:Выполнить FFT (Fourier.Forward);
+
+' Обновление частотной диаграммы
+:Очистить точки freqLineSeries;
+while (Для каждого i до maxIndex) is (Есть частоты?)
+    if (frequency >= 10?) then (true)
+        :Вычислить dB из magnitude;
+        :Добавить точку (frequency, dB);
+        :Обновить maxMagnitudeDB;
+    endif
+end while (Нет частот)
+if (Есть точки?) then (true)
+    if (lastFrequency < 4000?) then (true)
+        :Добавить точку (4000, -60);
+    endif
+else (false)
+    :Добавить точки (10, -60) и (4000, -60);
+endif
+:Установить FreqXAxis (Minimum, Maximum);
+:Установить FreqYAxis (Minimum, Maximum);
+:Обновить FreqPlotModel (InvalidatePlot);
+
+stop
+
+legend right
+|= Символ | Описание |
+| : | Действие (прямоугольник) |
+| if | Условие (ромб) |
+| while | Цикл (условие повторения) |
+endlegend
+
+@enduml

@@ -1,0 +1,32 @@
+@startuml StateDiagramPlayback
+
+' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
+skinparam monochrome true
+skinparam shadowing false
+skinparam stateFontSize 12
+skinparam stateFontName Arial
+skinparam stateBorderThickness 1
+skinparam stateBackgroundColor none
+skinparam stateBorderColor black
+skinparam stateCornerRadius 0
+skinparam defaultCornerRadius 0
+skinparam ArrowColor black
+skinparam style strictuml
+
+title Диаграмма состояний: Воспроизведение DreamSynth
+
+[*] --> Idle
+
+Idle --> Playing : MainWindow.PlayButton_Click\n[waveOut.Play(); StartPlayback()]
+Idle --> Editing : MidiEditorControl.MouseEvent\n[Add/Edit/Delete Note]
+Playing --> Idle : MainWindow.StopButton_Click\n[waveOut.Stop(); StopPlayback()]
+Playing --> Idle : MidiEditorControl.PlaybackTimer_Tick\n[playbackPosition >= sequenceDuration]
+Editing --> Idle : MidiEditorControl.MouseEvent\n[Complete Editing]
+
+state Playing {
+  Playing --> NotePlaying : MidiEditorControl.PlayNote\n[Note in playback range]
+  NotePlaying --> Playing : MidiEditorControl.StopNote\n[Note out of range]
+  NotePlaying : do / WaveGenerator.GenerateSample\nEqualizer.ProcessSample\nAudioVisualizer.Update
+}
+
+@enduml

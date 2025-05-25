@@ -1,0 +1,35 @@
+@startuml DataflowDiagramDreamSynth
+
+' ГОСТ-стиль: черно-белый, без теней
+skinparam monochrome true
+skinparam shadowing false
+skinparam nodeFontSize 12
+skinparam nodeFontName Arial
+skinparam nodeBorderThickness 1
+skinparam nodeBackgroundColor none
+skinparam nodeBorderColor black
+skinparam ArrowColor black
+
+title Диаграмма потоков данных: DreamSynth
+
+entity "Пользователь" as Пользователь
+entity "Графический интерфейс" as GUI
+entity "Редактор нот" as MidiEditor
+entity "Генератор сигналов" as WaveGenerator
+entity "Эквалайзер" as Equalizer
+entity "Визуализатор спектра" as Visualizer
+entity "Аудиовывод" as AudioOut
+
+Пользователь --> GUI : Команды (Play, Stop, BPM, параметры эквалайзера)
+GUI --> MidiEditor : MIDI-ноты (Pitch, StartTime, Duration)
+GUI --> WaveGenerator : Параметры волн (Type, Frequency, Amplitude)
+GUI --> Equalizer : Параметры фильтров (LowGain, MidGain, HighGain, Distortion)
+GUI --> Visualizer : Запрос визуализации (audioData)
+MidiEditor --> WaveGenerator : MIDI-данные (Pitch, StartTime, Duration)
+WaveGenerator --> Equalizer : Аудиосэмплы (float[])
+Equalizer --> WaveGenerator : Обработанные сэмплы (float[])
+WaveGenerator --> Visualizer : Аудиосэмплы (float[]) через OnSampleGenerated
+WaveGenerator --> AudioOut : Аудиопоток (float[])
+Visualizer --> GUI : Данные графиков (временной сигнал, спектр)
+
+@enduml

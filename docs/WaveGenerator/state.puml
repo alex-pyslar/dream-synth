@@ -1,0 +1,30 @@
+@startuml StateDiagram
+!define RECTANGLE state
+
+' Настройка стиля для ГОСТ
+skinparam monochrome true
+skinparam shadowing false
+skinparam stateFontSize 12
+skinparam stateFontName Arial
+
+title Диаграмма состояний: WaveGeneratorControl
+
+[*] --> Инициализация
+Инициализация: Создание компонентов UI
+Инициализация --> Ожидание : InitializeWaveGenerator()
+Ожидание: Ожидание событий UI
+Ожидание --> Обновление : Slider_ValueChanged() \nили ComboBox_SelectionChanged()
+Обновление: Выполнение Update()
+Обновление --> Ожидание : Завершение цикла
+Обновление : entry / _isUpdating = true
+Обновление : do / Обновить параметры волн
+Обновление : exit / _isUpdating = false
+
+' Легенда
+legend right
+|= Символ | Описание |
+| --> | Переход |
+| : | Описание состояния |
+endlegend
+
+@enduml

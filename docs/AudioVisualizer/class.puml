@@ -1,0 +1,74 @@
+@startuml ClassDiagramAudioVisualizer
+
+' ГОСТ-стиль: черно-белый, без теней
+skinparam monochrome true
+skinparam shadowing false
+skinparam classFontSize 12
+skinparam classFontName Arial
+skinparam classBorderThickness 1
+skinparam classBackgroundColor none
+skinparam classBorderColor black
+skinparam ArrowColor black
+
+title Диаграмма классов: AudioVisualizer
+
+class AudioVisualizer {
+  -timePlotModel: PlotModel
+  -freqPlotModel: PlotModel
+  -timeLineSeries: LineSeries
+  -freqLineSeries: LineSeries
+  -timeXAxis: LinearAxis
+  -timeYAxis: LinearAxis
+  -freqXAxis: LogarithmicAxis
+  -freqYAxis: LinearAxis
+  +AudioVisualizer(timePlotModel: PlotModel, freqPlotModel: PlotModel)
+  -ApplyModulation(audioData: float[], sampleRate: int): float[]
+  -ApplyDistortion(audioData: float[]): float[]
+  +Update(audioData: float[], sampleRate: int)
+}
+
+class PlotModel {
+  +Title: string
+  +Axes: AxisCollection
+  +Series: SeriesCollection
+  +InvalidatePlot(updateData: bool)
+}
+
+class LineSeries {
+  +Points: DataPointCollection
+  +Color: OxyColor
+  +LineStyle: LineStyle
+  +StrokeThickness: double
+}
+
+class LinearAxis {
+  +Position: AxisPosition
+  +Minimum: double
+  +Maximum: double
+  +Title: string
+  +MajorGridlineStyle: LineStyle
+  +MinorGridlineStyle: LineStyle
+}
+
+class LogarithmicAxis {
+  +Position: AxisPosition
+  +Minimum: double
+  +Maximum: double
+  +Title: string
+  +MajorGridlineStyle: LineStyle
+  +MinorGridlineStyle: LineStyle
+  +Base: double
+  +MajorStep: double
+  +MinorStep: double
+}
+
+AudioVisualizer o--> "1" PlotModel : timePlotModel
+AudioVisualizer o--> "1" PlotModel : freqPlotModel
+AudioVisualizer o--> "1" LineSeries : timeLineSeries
+AudioVisualizer o--> "1" LineSeries : freqLineSeries
+AudioVisualizer o--> "1" LinearAxis : timeXAxis
+AudioVisualizer o--> "1" LinearAxis : timeYAxis
+AudioVisualizer o--> "1" LogarithmicAxis : freqXAxis
+AudioVisualizer o--> "1" LinearAxis : freqYAxis
+
+@enduml

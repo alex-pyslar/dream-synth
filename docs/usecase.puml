@@ -1,0 +1,34 @@
+@startuml UsecaseDiagramDreamSynth
+
+' ГОСТ-стиль: черно-белый, без теней
+skinparam monochrome true
+skinparam shadowing false
+skinparam usecaseFontSize 12
+skinparam usecaseFontName Arial
+skinparam usecaseBorderThickness 1
+skinparam usecaseBackgroundColor none
+skinparam usecaseBorderColor black
+skinparam ArrowColor black
+
+title Диаграмма вариантов использования: DreamSynth
+
+actor "Композитор" as Composer
+actor "Звукорежиссер" as SoundEngineer
+actor "Исследователь" as Researcher
+actor "Студент" as Student
+
+Composer --> (Создать музыкальную композицию)
+SoundEngineer --> (Настроить аудиоэффекты)
+Researcher --> (Анализировать аудиосигналы)
+Student --> (Изучать синтез звука)
+
+(Создать музыкальную композицию) .> (Редактировать MIDI-ноты) : включает
+(Создать музыкальную композицию) .> (Настроить параметры волн) : включает
+(Настроить аудиоэффекты) .> (Настроить эквалайзер) : включает
+(Настроить аудиоэффекты) .> (Настроить параметры волн) : включает
+(Анализировать аудиосигналы) .> (Визуализировать спектр) : включает
+(Изучать синтез звука) .> (Визуализировать спектр) : включает
+(Изучать синтез звука) .> (Редактировать MIDI-ноты) : включает
+(Изучать синтез звука) .> (Настроить эквалайзер) : включает
+
+@enduml

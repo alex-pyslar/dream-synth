@@ -1,0 +1,65 @@
+@startuml ClassDiagramMidiEditor
+
+' ГОСТ-стиль: черно-белый, без теней
+skinparam monochrome true
+skinparam shadowing false
+skinparam classFontSize 12
+skinparam classFontName Arial
+skinparam classBorderThickness 1
+skinparam classBackgroundColor none
+skinparam classBorderColor black
+skinparam ArrowColor black
+
+title Диаграмма классов: MidiEditorControl
+
+class MidiEditorControl {
+  -Notes: ObservableCollection<MidiNote>
+  -SelectedNote: MidiNote
+  -SelectedRectangle: Rectangle
+  -isDragging: bool
+  -isResizing: bool
+  -mouseStartPosition: Point
+  -initialWidth: double
+  -noteHeight: double
+  -gridSize: double
+  -_bpm: double
+  -BeatsPerGridUnit: double
+  -lastNoteCreationTime: DateTime
+  -Interval: double
+  -PlaybackLine: Line
+  -playbackTimer: DispatcherTimer
+  -playbackStopwatch: Stopwatch
+  -playbackPosition: double
+  -activeNotes: HashSet<MidiNote>
+  -sequenceDuration: double
+  +BPM: double
+  +MidiEditorControl()
+  -UpdateInterval()
+  -MidiEditorControl_Loaded(sender, e)
+  -DrawGrid()
+  -DrawNote(note: MidiNote)
+  -RoundToGrid(value: double): double
+  -NoteCanvas_MouseDown(sender, e)
+  -Note_MouseLeftButtonDown(sender, e)
+  -Note_MouseRightButtonDown(sender, e)
+  -NoteCanvas_MouseMove(sender, e)
+  -NoteCanvas_MouseLeftButtonUp(sender, e)
+  -PlaybackTimer_Tick(sender, e)
+  -PlayNote(note: MidiNote)
+  -StopNote(note: MidiNote)
+  +StartPlayback()
+  +StopPlayback()
+}
+
+class MidiNote {
+  +Pitch: int
+  +StartTime: double
+  +Duration: double
+}
+
+MidiEditorControl o--> "1..*" MidiNote : Notes
+MidiEditorControl o--> "0..1" MidiNote : SelectedNote
+MidiEditorControl o--> "1" Line : PlaybackLine
+MidiEditorControl o--> "1" DispatcherTimer : playbackTimer
+
+@enduml

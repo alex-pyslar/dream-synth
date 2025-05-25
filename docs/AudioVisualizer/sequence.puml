@@ -1,0 +1,57 @@
+@startuml SequenceDiagramAudioVisualizerUpdate
+
+' ГОСТ-стиль: черно-белый, без теней
+skinparam monochrome true
+skinparam shadowing false
+skinparam participantFontSize 12
+skinparam participantFontName Arial
+skinparam participantBorderThickness 1
+skinparam participantBackgroundColor none
+skinparam participantBorderColor black
+skinparam ArrowColor black
+
+title Диаграмма последовательности: Обновление визуализации звука
+
+participant ":AudioVisualizer" as AV
+participant ":PlotModel" as TimePlotModel
+participant ":PlotModel" as FreqPlotModel
+participant ":LineSeries" as TimeLineSeries
+participant ":LineSeries" as FreqLineSeries
+participant ":LinearAxis" as TimeXAxis
+participant ":LinearAxis" as TimeYAxis
+participant ":LogarithmicAxis" as FreqXAxis
+participant ":LinearAxis" as FreqYAxis
+participant "MathNet.Numerics.Fourier" as Fourier
+
+AV -> AV: Update(audioData, sampleRate)
+AV -> AV: ApplyModulation(audioData, sampleRate)
+AV -> AV: ApplyDistortion(modulatedData)
+
+' Обновление временной диаграммы
+AV -> TimeLineSeries: Очистить точки (Points.Clear())
+loop для каждого sample в processedData
+    AV -> TimeLineSeries: Добавить точку (timeMs, sample)
+end
+AV -> TimeXAxis: Установить Maximum = totalTimeMs
+AV -> TimeXAxis: Установить Minimum = 0
+AV -> TimeYAxis: Установить Maximum = maxAmplitude * 1.1
+AV -> TimeYAxis: Установить Minimum = -maxAmplitude * 1.1
+AV -> TimePlotModel: Обновить (InvalidatePlot(true))
+
+' Подготовка данных для частотной диаграммы
+AV -> AV: Преобразовать processedData в Complex32[]
+AV -> Fourier: Forward(complexData, Matlab)
+
+' Обновление частотной диаграммы
+AV -> FreqLineSeries: Очистить точки (Points.Clear())
+loop для каждого i до maxIndex
+    AV -> FreqLineSeries: Добавить точку (frequency, dB)
+end
+AV -> FreqLineSeries: Добавить конечные точки (если нужно)
+AV -> FreqXAxis: Установить Minimum = 10
+AV -> FreqXAxis: Установить Maximum = 4000
+AV -> FreqYAxis: Установить Maximum = maxMagnitudeDB + 10
+AV -> FreqYAxis: Установить Minimum = -60
+AV -> FreqPlotModel: Обновить (InvalidatePlot(true))
+
+@enduml

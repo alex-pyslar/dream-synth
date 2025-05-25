@@ -1,0 +1,71 @@
+@startuml ClassDiagram
+!define RECTANGLE class
+
+' Настройка стиля для соответствия ГОСТ
+skinparam monochrome true
+skinparam shadowing false
+skinparam classFontSize 12
+skinparam classAttributeFontSize 10
+skinparam classFontName Arial
+skinparam packageStyle rectangle
+skinparam stereotypeCBackgroundColor none
+skinparam stereotypeCBorderColor black
+
+title Диаграмма классов
+
+package "DreamSynth" {
+  RECTANGLE Wave {
+    -Type: WaveType
+    -Frequency: double
+    -Amplitude: float
+    +Set(type: WaveType, octave: int, pitch: int, amplitude: float)
+  }
+
+  RECTANGLE WaveGenerator {
+    -Waves: Wave[3]
+    -phase1: double
+    -phase2: double
+    -phase3: double
+    -SAFETY_FACTOR: float = 0.8
+    -equalizer: Equalizer
+    +OnSampleGenerated: Action<float[]>
+    +WaveGenerator(waves: Wave[], equalizer: Equalizer)
+    +Read(buffer: float[], offset: int, sampleCount: int): int
+    -GenerateWaveSample(wave: Wave, phase: double, sampleRate: double): float
+    -SoftClip(sample: float): float
+  }
+
+  RECTANGLE WaveGeneratorControl {
+    -counter: int
+    -WaveGenerator: WaveGenerator
+    -_isUpdating: bool
+    +WaveGeneratorControl()
+    +InitializeWaveGenerator(equalizer: Equalizer)
+    -Slider_ValueChanged(sender: object, e: RoutedPropertyChangedEventArgs<double>)
+    -ComboBox_SelectionChanged(sender: object, e: SelectionChangedEventArgs)
+    +Update()
+    -GetWaveTypeFromComboBox(waveIndex: int): WaveType
+    -GetOctaveFromComboBox(waveIndex: int): int
+  }
+
+  RECTANGLE Equalizer {
+    -IsModulationEnabled: bool
+    +ProcessSample(sample: float): float
+  }
+}
+
+' Связи
+WaveGenerator o--> "3" Wave : содержит
+WaveGenerator --> Equalizer : использует
+WaveGeneratorControl --> WaveGenerator : управляет
+WaveGeneratorControl --> Equalizer : инициализирует
+
+' Легенда
+legend right
+|= Стереотип | Описание |
+| <<class>> | Класс модуля |
+| - | Приватный член |
+| + | Публичный член |
+endlegend
+
+@enduml

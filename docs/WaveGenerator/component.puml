@@ -1,0 +1,32 @@
+@startuml ComponentDiagram
+!define RECTANGLE component
+
+' Настройка стиля для ГОСТ
+skinparam monochrome true
+skinparam shadowing false
+skinparam componentFontSize 12
+skinparam componentFontName Arial
+
+title Диаграмма компонентов
+
+package "DreamSynth" {
+  RECTANGLE "[WaveGenerator]" as WG
+  RECTANGLE "[WaveGeneratorControl]" as WGC
+  RECTANGLE "[Equalizer]" as EQ
+  RECTANGLE "[MidiEditorControl]" as MEC
+}
+
+' Зависимости
+WGC --> WG : управляет
+WGC --> EQ : инициализирует
+WGC --> MEC : получает ноты
+WG --> EQ : использует
+
+' Легенда
+legend right
+|= Символ | Описание |
+| [ ] | Компонент |
+| --> | Зависимость |
+endlegend
+
+@enduml

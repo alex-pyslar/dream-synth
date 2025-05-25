@@ -1,0 +1,59 @@
+@startuml ActivityDiagramPlaybackTick
+
+' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
+skinparam monochrome true
+skinparam shadowing false
+skinparam activityFontSize 12
+skinparam activityFontName Arial
+skinparam activityBorderThickness 1
+skinparam activityBackgroundColor none
+skinparam activityBorderColor black
+skinparam activityCornerRadius 0
+skinparam defaultCornerRadius 0
+skinparam ArrowColor black
+skinparam ActivityDiamondCornerRadius 0
+skinparam style strictuml
+
+title Блок-схема алгоритма: PlaybackTimer_Tick
+
+start
+
+:Получить elapsedMs\n(playbackStopwatch.ElapsedMilliseconds);
+:Вычислить playbackPosition\n(elapsedMs / Interval);
+:Вычислить lineX\n(playbackPosition * gridSize);
+
+while (Для каждой ноты в NoteCanvas) is (Есть ноты?)
+    :Получить noteStart и noteEnd;
+    if (playbackPosition >= noteStart - tolerance\nи playbackPosition < noteEnd + tolerance) then (true)
+        :PlayNote(note);
+        :Добавить в activeNotes;
+    else (false)
+        if (Нота в activeNotes?) then (true)
+            :StopNote(note);
+            :Удалить из activeNotes;
+        endif
+    endif
+    if (playbackPosition >= noteStart - visualLookahead\nи playbackPosition < noteEnd + tolerance) then (true)
+        :Подсветить ноту\n(Fill = Green, Stroke = Yellow);
+    else (false)
+        :Сбросить подсветку\n(Fill = Blue, Stroke = Black);
+    endif
+end while (Нет нот)
+
+if (playbackPosition >= sequenceDuration?) then (true)
+    :StopPlayback();
+    :StartPlayback();
+else (false)
+    :Обновить PlaybackLine\n(X1, X2 = lineX);
+endif
+
+stop
+
+legend right
+|= Символ | Описание |
+| : | Действие (прямоугольник) |
+| if | Условие (ромб) |
+| while | Цикл (условие повторения) |
+endlegend
+
+@enduml

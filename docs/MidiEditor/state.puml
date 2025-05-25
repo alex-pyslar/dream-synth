@@ -1,0 +1,25 @@
+@startuml StateDiagramMidiEditor
+
+' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
+skinparam monochrome true
+skinparam shadowing false
+skinparam stateFontSize 12
+skinparam stateFontName Arial
+skinparam stateBorderThickness 1
+skinparam stateBackgroundColor none
+skinparam stateBorderColor black
+skinparam stateCornerRadius 0
+skinparam defaultCornerRadius 0
+skinparam ArrowColor black
+skinparam style strictuml
+
+title Диаграмма состояний: MidiEditorControl
+
+[*] --> PlaybackStopped
+
+PlaybackStopped --> PlaybackRunning : StartPlayback()\n[playbackTimer.Start()]
+PlaybackRunning --> PlaybackStopped : StopPlayback()\n[playbackTimer.Stop()]
+PlaybackRunning : do / Обновлять PlaybackLine\nПроверять ноты\nPlayNote/StopNote
+PlaybackStopped : do / Сбросить PlaybackLine\nОстановить все ноты
+
+@enduml

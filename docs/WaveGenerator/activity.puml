@@ -1,0 +1,58 @@
+@startuml ActivityDiagram
+
+' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
+skinparam monochrome true
+skinparam shadowing false
+skinparam activityFontSize 12
+skinparam activityFontName Arial
+skinparam activityBorderThickness 1
+skinparam activityBackgroundColor none
+skinparam activityBorderColor black
+skinparam activityCornerRadius 0
+skinparam defaultCornerRadius 0
+skinparam ArrowColor black
+skinparam ActivityDiamondCornerRadius 0
+skinparam style strictuml
+
+title Блок-схема алгоритма: Метод Update
+
+start
+
+:Установить _isUpdating = true;
+
+while (Цикл) is (true)
+  :Получить список нот из MidiEditorControl;
+  :Увеличить counter;
+
+  :Проверить: counter > 1600?;
+  if (counter > 1600) then (да)
+    :Установить counter = 0;
+  else (нет)
+    :Продолжить;
+  endif
+
+  :Найти ноты для воспроизведения;
+
+  :Проверить: Есть ноты для воспроизведения?;
+  if (Есть ноты) then (да)
+    :Для каждой волны в WaveGenerator.Waves;
+    :Получить тип волны и октаву;
+    :Установить параметры волны (тип, октава, высота, амплитуда);
+  else (нет)
+    :Для каждой волны в WaveGenerator.Waves;
+    :Установить параметры (Sine, 0, 0, 0);
+  endif
+
+  :Ожидать Task.Delay(MainWindow.interval);
+endwhile
+
+stop
+
+legend right
+|= Символ | Описание |
+| : | Действие или условие (прямоугольник) |
+| while | Цикл |
+| if | Ветвление (описано текстом) |
+endlegend
+
+@enduml

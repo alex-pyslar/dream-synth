@@ -1,0 +1,41 @@
+@startuml ComponentDiagram
+!define RECTANGLE component
+
+' Настройка стиля для ГОСТ
+skinparam monochrome true
+skinparam shadowing false
+skinparam componentFontSize 12
+skinparam componentFontName Arial
+
+title Диаграмма компонентов
+
+package "DreamSynth" {
+  RECTANGLE "[AudioVisualizer]" as AV
+}
+
+package "OxyPlot" {
+  RECTANGLE "[PlotModel]" as PM
+  RECTANGLE "[LineSeries]" as LS
+  RECTANGLE "[LinearAxis]" as LA
+  RECTANGLE "[LogarithmicAxis]" as LGA
+}
+
+package "MathNet.Numerics" {
+  RECTANGLE "[Fourier]" as F
+}
+
+' Зависимости
+AV --> PM : использует для графиков
+AV --> LS : управляет сериями данных
+AV --> LA : управляет осями времени
+AV --> LGA : управляет частотной осью
+AV --> F : использует для FFT
+
+' Легенда
+legend right
+|= Символ | Описание |
+| [ ] | Компонент |
+| --> | Зависимость |
+endlegend
+
+@enduml

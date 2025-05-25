@@ -1,0 +1,37 @@
+@startuml ActivityDiagramProcessSample
+
+' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
+skinparam monochrome true
+skinparam shadowing false
+skinparam activityFontSize 12
+skinparam activityFontName Arial
+skinparam activityBorderThickness 1
+skinparam activityBackgroundColor none
+skinparam activityBorderColor black
+skinparam activityCornerRadius 0
+skinparam defaultCornerRadius 0
+skinparam ArrowColor black
+skinparam ActivityDiamondCornerRadius 0
+skinparam style strictuml
+
+title Блок-схема алгоритма: ProcessSample
+
+start
+
+:Получить входной sample;
+
+:Обработать sample через lowShelf.Process();
+:Обработать sample через midPeak.Process();
+:Обработать sample через highShelf.Process();
+:Обработать sample через distortion.Process(sample, DistortionAmount);
+
+:Вернуть обработанный sample;
+
+stop
+
+legend right
+|= Символ | Описание |
+| : | Действие (прямоугольник) |
+endlegend
+
+@enduml

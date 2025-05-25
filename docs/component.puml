@@ -1,0 +1,31 @@
+@startuml ComponentDiagramDreamSynth
+
+' ГОСТ-стиль: черно-белый, без теней
+skinparam monochrome true
+skinparam shadowing false
+skinparam componentFontSize 12
+skinparam componentFontName Arial
+skinparam componentBorderThickness 1
+skinparam componentBackgroundColor none
+skinparam componentBorderColor black
+skinparam ArrowColor black
+
+title Диаграмма компонентов: DreamSynth
+
+package "Приложение DreamSynth" {
+  [Графический интерфейс] #..# [WPF] : Рендеринг интерфейса
+  [Графический интерфейс] #..# [NAudio] : Аудиовывод
+  [Графический интерфейс] --> [Редактор нот] : Управление MIDI-нотами
+  [Графический интерфейс] --> [Генератор сигналов] : Настройка волн
+  [Графический интерфейс] --> [Эквалайзер] : Настройка фильтров
+  [Графический интерфейс] --> [Визуализатор спектра] : Отображение сигналов
+  [Редактор нот] --> [MIDI-нота] : Создание/редактирование нот
+  [Редактор нот] --> [Генератор сигналов] : Передача MIDI-данных
+  [Генератор сигналов] --> [Волна] : Генерация аудиосигналов
+  [Генератор сигналов] --> [Эквалайзер] : Применение фильтров и искажений
+  [Генератор сигналов] --> [Визуализатор спектра] : Передача аудиосэмплов
+  [Визуализатор спектра] #..# [OxyPlot] : Построение графиков
+  [Визуализатор спектра] #..# [MathNet.Numerics] : Вычисление FFT
+}
+
+@enduml

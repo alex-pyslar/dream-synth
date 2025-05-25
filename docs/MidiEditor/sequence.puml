@@ -1,0 +1,51 @@
+@startuml SequenceDiagramMidiEditor
+
+' ГОСТ-стиль: черно-белый, без теней
+skinparam monochrome true
+skinparam shadowing false
+skinparam participantFontSize 12
+skinparam participantFontName Arial
+skinparam participantBorderThickness 1
+skinparam participantBackgroundColor none
+skinparam participantBorderColor black
+skinparam ArrowColor black
+
+title Диаграмма последовательности: Взаимодействие с MidiEditorControl
+
+actor User
+participant ":MidiEditorControl" as Editor
+participant ":Canvas" as NoteCanvas
+participant ":ObservableCollection<MidiNote>" as Notes
+participant ":Line" as PlaybackLine
+participant ":DispatcherTimer" as Timer
+
+' Создание ноты
+User -> NoteCanvas: Нажать левую кнопку мыши
+NoteCanvas -> Editor: NoteCanvas_MouseDown(sender, e)
+Editor -> Notes: Добавить новую ноту (Notes.Add(note))
+Editor -> Editor: DrawGrid()
+Editor -> NoteCanvas: Очистить и перерисовать ноты
+
+' Удаление ноты
+User -> NoteCanvas: Нажать среднюю кнопку мыши
+NoteCanvas -> Editor: NoteCanvas_MouseDown(sender, e)
+Editor -> Notes: Удалить ноту (Notes.Remove(note))
+Editor -> Editor: DrawGrid()
+Editor -> NoteCanvas: Очистить и перерисовать ноты
+
+' Воспроизведение
+User -> Editor: StartPlayback()
+Editor -> PlaybackLine: Сбросить позицию (X1, X2 = 0)
+Editor -> Timer: Запустить (Start())
+loop каждые 10 мс
+    Timer -> Editor: PlaybackTimer_Tick(sender, e)
+    Editor -> PlaybackLine: Обновить позицию (X1, X2 = lineX)
+    Editor -> Notes: Проверить активные ноты
+    alt Нота должна играть
+        Editor -> Editor: PlayNote(note)
+    else Нота должна остановиться
+        Editor -> Editor: StopNote(note)
+    end
+end
+
+@enduml

@@ -1,0 +1,202 @@
+@startuml ClassDiagramDreamSynth
+
+' ГОСТ-стиль: черно-белый, без теней
+skinparam monochrome true
+skinparam shadowing false
+skinparam classFontSize 12
+skinparam classFontName Arial
+skinparam classBorderThickness 1
+skinparam classBackgroundColor none
+skinparam classBorderColor black
+skinparam ArrowColor black
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+
+title Диаграмма классов: DreamSynth
+
+package "DreamSynth" {
+
+  package "GUI" {
+    class MainWindow {
+      -waveOut: WaveOutEvent
+      -audioVisualizer: AudioVisualizer
+      +bpm: int
+      +interval: double
+      -TimePlotView: PlotView
+      -FreqPlotView: PlotView
+      -BpmSlider: Slider
+      +MainWindow()
+      -InitializeAudioVisualizer()
+      -PlayButton_Click(sender: object, e: RoutedEventArgs)
+      -StopButton_Click(sender: object, e: RoutedEventArgs)
+      -BpmSlider_ValueChanged(sender: object, e: RoutedPropertyChangedEventArgs<double>)
+    }
+
+    class EqualizerControl {
+      -Equalizer: Equalizer
+      -LowGainSlider: Slider
+      -MidGainSlider: Slider
+      -HighGainSlider: Slider
+      -DistortionSlider: Slider
+      -LowGainTextBlock: TextBlock
+      -MidGainTextBlock: TextBlock
+      -HighGainTextBlock: TextBlock
+      -DistortionTextBlock: TextBlock
+      -ModulationToggle: CheckBox
+      +PlayBtn: Button
+      +StopBtn: Button
+      +IsModulationEnabled: bool
+      +EqualizerControl()
+      -Slider_ValueChanged(sender: object, e: RoutedPropertyChangedEventArgs<double>)
+      -ModulationToggle_CheckedChanged(sender: object, e: RoutedEventArgs)
+    }
+
+    class MidiEditorControl {
+      +Notes: ObservableCollection<MidiNote>
+      -SelectedNote: MidiNote
+      -SelectedRectangle: Rectangle
+      -isDragging: bool
+      -isResizing: bool
+      -mouseStartPosition: Point
+      -initialWidth: double
+      -noteHeight: double
+      -gridSize: double
+      -_bpm: double
+      -Interval: double
+      -PlaybackLine: Line
+      -playbackTimer: DispatcherTimer
+      -playbackStopwatch: Stopwatch
+      -playbackPosition: double
+      -activeNotes: HashSet<MidiNote>
+      -sequenceDuration: double
+      +BPM: double
+      +MidiEditorControl()
+      +StartPlayback()
+      +StopPlayback()
+      -UpdateInterval()
+      -DrawGrid()
+      -DrawNote(note: MidiNote)
+      -RoundToGrid(value: double): double
+      -NoteCanvas_MouseLeftButtonDown(sender: object, e: MouseButtonEventArgs)
+      -Note_MouseLeftButtonDown(sender: object, e: MouseButtonEventArgs)
+      -Note_MouseRightButtonDown(sender: object, e: MouseButtonEventArgs)
+      -NoteCanvas_MouseMove(sender: object, e: MouseEventArgs)
+      -NoteCanvas_MouseLeftButtonUp(sender: object, e: MouseButtonEventArgs)
+      -PlaybackTimer_Tick(sender: object, e: EventArgs)
+      -PlayNote(note: MidiNote)
+      -StopNote(note: MidiNote)
+    }
+  }
+
+  package "Signal Generator" {
+    class WaveGenerator {
+      -Waves: Wave[3]
+      -phase1: double
+      -phase2: double
+      -phase3: double
+      -equalizer: Equalizer
+      -counter: int
+      -SAFETY_FACTOR: float
+      +OnSampleGenerated: Action<float[]>
+      +Read(buffer: float[], offset: int, sampleCount: int): int
+      -GenerateWaveSample(wave: Wave, phase: double, sampleRate: double): float
+      -SoftClip(sample: float): float
+    }
+
+    class Wave {
+      +Type: WaveType
+      +Frequency: float
+      +Amplitude: float
+      +Set(type: WaveType, octave: int, pitch: float, amplitude: float)
+    }
+
+    enum WaveType {
+      Sine
+      Square
+      Triangle
+    }
+
+    class Equalizer {
+      -lowShelf: BiquadFilter
+      -midPeak: BiquadFilter
+      -highShelf: BiquadFilter
+      -distortion: Distortion
+      -sampleRate: int
+      +IsModulationEnabled: bool
+      +LowGain: float
+      +MidGain: float
+      +HighGain: float
+      +DistortionAmount: float
+      +Equalizer(sampleRate: int)
+      +UpdateFilters(isModulationEnabled: bool)
+      +ProcessSample(sample: float): float
+    }
+
+    class BiquadFilter {
+      -a0: float
+      -a1: float
+      -a2: float
+      -b0: float
+      -b1: float
+      -b2: float
+      -x1: float
+      -x2: float
+      -y1: float
+      -y2: float
+      +SetLowShelf(frequency: float, sampleRate: float, gainDb: float, Q: float)
+      +SetPeaking(frequency: float, sampleRate: float, gainDb: float, Q: float)
+      +SetHighShelf(frequency: float, sampleRate: float, gainDb: float, Q: float)
+      -Normalize()
+      +Process(input: float): float
+    }
+
+    class Distortion {
+      +Process(sample: float, amount: float): float
+    }
+  }
+
+  package "Spectrum Visualizer" {
+    class AudioVisualizer {
+      -timePlotModel: PlotModel
+      -freqPlotModel: PlotModel
+      -timeLineSeries: LineSeries
+      -freqLineSeries: LineSeries
+      -timeXAxis: LinearAxis
+      -timeYAxis: LinearAxis
+      -freqXAxis: LogarithmicAxis
+      -freqYAxis: LinearAxis
+      +AudioVisualizer(timePlotModel: PlotModel, freqPlotModel: PlotModel)
+      -ApplyModulation(audioData: float[], sampleRate: int): float[]
+      -ApplyDistortion(audioData: float[]): float[]
+      +Update(audioData: float[], sampleRate: int)
+    }
+  }
+
+  package "Note Editor" {
+    class MidiNote {
+      +Pitch: int
+      +StartTime: double
+      +Duration: double
+    }
+  }
+}
+
+' Связи
+MainWindow --> EqualizerControl : uses
+MainWindow --> WaveGenerator : uses
+MainWindow --> MidiEditorControl : uses
+MainWindow --> AudioVisualizer : initializes
+EqualizerControl o--> Equalizer : owns
+Equalizer o--> BiquadFilter : contains
+Equalizer o--> Distortion : contains
+WaveGenerator --> Equalizer : applies
+WaveGenerator o--> Wave : contains
+Wave --> WaveType : uses
+MidiEditorControl o--> MidiNote : manages
+WaveGenerator --> AudioVisualizer : notifies via OnSampleGenerated
+MainWindow --> "NAudio" : uses WaveOutEvent
+AudioVisualizer --> "OxyPlot" : uses PlotModel, LineSeries
+AudioVisualizer --> "MathNet.Numerics" : uses Fourier
+MainWindow --> "WPF" : uses Slider, PlotView
+
+@enduml
