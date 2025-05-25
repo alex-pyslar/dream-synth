@@ -29,9 +29,9 @@ namespace DreamSynth
 
         public void UpdateFilters(bool isModulationEnabled)
         {
-            lowShelf.SetLowShelf(200.0f, sampleRate, LowGain, 0.7f);
-            midPeak.SetPeaking(1000.0f, sampleRate, MidGain, 1.0f);
-            highShelf.SetHighShelf(5000.0f, sampleRate, HighGain, 0.7f);
+            lowShelf.SetLowShelf(100.0f, sampleRate, LowGain, 0.7f);
+            midPeak.SetPeaking(1500.0f, sampleRate, MidGain, 1.0f);
+            highShelf.SetHighShelf(2000.0f, sampleRate, HighGain, 0.7f);
             IsModulationEnabled = isModulationEnabled;
         }
 

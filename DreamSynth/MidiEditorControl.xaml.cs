@@ -24,7 +24,8 @@ namespace DreamSynth
         private const double gridSize = 20;
         private double _bpm = 120;
         private const double BeatsPerGridUnit = 1;
-        
+        private DateTime lastNoteCreationTime = DateTime.MinValue;
+
         public double BPM
         {
             get => _bpm;
@@ -68,6 +69,10 @@ namespace DreamSynth
             playbackTimer = new System.Windows.Threading.DispatcherTimer();
             playbackTimer.Interval = TimeSpan.FromMilliseconds(10);
             playbackTimer.Tick += PlaybackTimer_Tick;
+
+            NoteCanvas.MouseDown += NoteCanvas_MouseDown;
+            NoteCanvas.MouseMove += NoteCanvas_MouseMove;
+            NoteCanvas.MouseLeftButtonUp += NoteCanvas_MouseLeftButtonUp;
         }
 
         private void UpdateInterval()
@@ -156,24 +161,53 @@ namespace DreamSynth
             return Math.Round(value / gridSize) * gridSize;
         }
 
-        private void NoteCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void NoteCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (isDragging || isResizing) return;
-
-            var mousePosition = e.GetPosition(NoteCanvas);
-            var startTime = RoundToGrid(mousePosition.X);
-            int pitchIndex = (int)Math.Round(mousePosition.Y / gridSize);
-            pitchIndex = Math.Max(0, Math.Min(pitchIndex, 11));
-
-            var note = new MidiNote
+            if ((DateTime.Now - lastNoteCreationTime).TotalMilliseconds < 200) return;
+            
+            if (e.ChangedButton == MouseButton.Middle)
             {
-                Pitch = pitchIndex,
-                StartTime = startTime / gridSize,
-                Duration = 1
-            };
+                var mousePosition = e.GetPosition(NoteCanvas);
+                
+                foreach (var child in NoteCanvas.Children.OfType<Rectangle>())
+                {
+                    var note = child.Tag as MidiNote;
+                    if (note == null) continue;
 
-            Notes.Add(note);
-            DrawGrid();
+                    double left = Canvas.GetLeft(child);
+                    double top = Canvas.GetTop(child);
+                    double right = left + child.Width;
+                    double bottom = top + child.Height;
+                    
+                    if (mousePosition.X >= left && mousePosition.X <= right &&
+                        mousePosition.Y >= top && mousePosition.Y <= bottom)
+                    {
+                        Notes.Remove(note);
+                        DrawGrid();
+                        break;
+                    }
+                }
+            }
+            else if (e.ChangedButton == MouseButton.Left)
+            {
+                if (isDragging || isResizing) return;
+
+                var mousePosition = e.GetPosition(NoteCanvas);
+                var startTime = RoundToGrid(mousePosition.X);
+                int pitchIndex = (int)Math.Round(mousePosition.Y / gridSize);
+                pitchIndex = Math.Max(0, Math.Min(pitchIndex, 11));
+
+                var note = new MidiNote
+                {
+                    Pitch = pitchIndex,
+                    StartTime = startTime / gridSize,
+                    Duration = 1
+                };
+
+                Notes.Add(note);
+                DrawGrid();
+                lastNoteCreationTime = DateTime.Now;
+            }
         }
 
         private void Note_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

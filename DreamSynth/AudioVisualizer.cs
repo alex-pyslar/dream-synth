@@ -15,7 +15,7 @@ namespace DreamSynth
         private readonly LineSeries freqLineSeries;
         private readonly LinearAxis timeXAxis;
         private readonly LinearAxis timeYAxis;
-        private readonly LinearAxis freqXAxis;
+        private readonly LogarithmicAxis freqXAxis;
         private readonly LinearAxis freqYAxis;
 
         public AudioVisualizer(PlotModel timePlotModel, PlotModel freqPlotModel)
@@ -54,14 +54,17 @@ namespace DreamSynth
             timePlotModel.Series.Add(timeLineSeries);
             
             freqPlotModel.Title = null;
-            freqXAxis = new LinearAxis
+            freqXAxis = new LogarithmicAxis
             {
                 Position = AxisPosition.Bottom,
-                Minimum = 0,
-                Maximum = 5000,
+                Minimum = 10,
+                Maximum = 4000,
                 Title = "Частота (Гц)",
                 MajorGridlineStyle = LineStyle.Solid,
-                MinorGridlineStyle = LineStyle.Dot
+                MinorGridlineStyle = LineStyle.Dot,
+                Base = 10,
+                MajorStep = 10,
+                MinorStep = 1
             };
             freqYAxis = new LinearAxis
             {
@@ -148,40 +151,37 @@ namespace DreamSynth
             freqLineSeries.Points.Clear();
             int n = processedData.Length / 2;
             float frequencyStep = sampleRate / (float)processedData.Length;
-            float maxFrequency = 0f;
             float maxMagnitudeDB = -60f;
-            
-            for (int i = 0; i < n; i++)
-            {
-                float magnitude = complexData[i].Magnitude;
-                if (magnitude > 0)
-                {
-                    float dB = 20 * (float)Math.Log10(magnitude);
-                    if (dB > maxMagnitudeDB) maxMagnitudeDB = dB;
-                    if (dB > -60)
-                    {
-                        float frequency = i * frequencyStep;
-                        if (frequency > maxFrequency) maxFrequency = frequency;
-                    }
-                }
-            }
-            
-            maxFrequency = maxFrequency == 0 ? 1000 : maxFrequency * 2;
-            maxFrequency = Math.Min(maxFrequency, sampleRate / 2);
-            int maxIndex = (int)(maxFrequency / frequencyStep);
+            int maxIndex = (int)(4000 / frequencyStep);
             maxIndex = Math.Min(maxIndex, n);
             
             for (int i = 0; i < maxIndex; i++)
             {
                 float frequency = i * frequencyStep;
+                if (frequency < 10) continue;
                 float magnitude = complexData[i].Magnitude;
                 float dB = magnitude > 0 ? 20 * (float)Math.Log10(magnitude) : -60;
                 dB = Math.Max(dB, -60);
+                if (dB > maxMagnitudeDB) maxMagnitudeDB = dB;
                 freqLineSeries.Points.Add(new DataPoint(frequency, dB));
             }
             
-            freqXAxis.Maximum = maxFrequency;
-            freqXAxis.Minimum = 0;
+            if (freqLineSeries.Points.Count > 0)
+            {
+                float lastFrequency = (float)freqLineSeries.Points[freqLineSeries.Points.Count - 1].X;
+                if (lastFrequency < 4000)
+                {
+                    freqLineSeries.Points.Add(new DataPoint(4000, -60));
+                }
+            }
+            else
+            {
+                freqLineSeries.Points.Add(new DataPoint(10, -60));
+                freqLineSeries.Points.Add(new DataPoint(4000, -60));
+            }
+            
+            freqXAxis.Minimum = 10;
+            freqXAxis.Maximum = 4000;
             freqYAxis.Maximum = maxMagnitudeDB == -60 ? 0 : maxMagnitudeDB + 10;
             freqYAxis.Minimum = -60;
 

@@ -25,7 +25,7 @@
                 Width="640" Height="120"
                 HorizontalAlignment="Left" 
                 VerticalAlignment="Top"
-                MouseLeftButtonDown="NoteCanvas_MouseLeftButtonDown"
+                MouseDown="NoteCanvas_MouseDown"
                 MouseMove="NoteCanvas_MouseMove"
                 MouseLeftButtonUp="NoteCanvas_MouseLeftButtonUp" 
                 Grid.Column="1" />
