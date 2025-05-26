@@ -27,7 +27,6 @@ AV -> AV: Update(audioData, sampleRate)
 AV -> AV: ApplyModulation(audioData, sampleRate)
 AV -> AV: ApplyDistortion(modulatedData)
 
-' Обновление временной диаграммы
 AV -> TimeLineSeries: Очистить точки (Points.Clear())
 loop для каждого sample в processedData
     AV -> TimeLineSeries: Добавить точку (timeMs, sample)
@@ -38,11 +37,9 @@ AV -> TimeYAxis: Установить Maximum = maxAmplitude * 1.1
 AV -> TimeYAxis: Установить Minimum = -maxAmplitude * 1.1
 AV -> TimePlotModel: Обновить (InvalidatePlot(true))
 
-' Подготовка данных для частотной диаграммы
 AV -> AV: Преобразовать processedData в Complex32[]
 AV -> Fourier: Forward(complexData, Matlab)
 
-' Обновление частотной диаграммы
 AV -> FreqLineSeries: Очистить точки (Points.Clear())
 loop для каждого i до maxIndex
     AV -> FreqLineSeries: Добавить точку (frequency, dB)

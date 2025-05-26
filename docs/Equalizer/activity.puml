@@ -1,6 +1,5 @@
 @startuml ActivityDiagramProcessSample
 
-' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
 skinparam monochrome true
 skinparam shadowing false
 skinparam activityFontSize 12
@@ -13,6 +12,8 @@ skinparam defaultCornerRadius 0
 skinparam ArrowColor black
 skinparam ActivityDiamondCornerRadius 0
 skinparam style strictuml
+skinparam defaultTextAlignment center
+skinparam roundCorner 0
 
 title Блок-схема алгоритма: ProcessSample
 
@@ -28,10 +29,4 @@ start
 :Вернуть обработанный sample;
 
 stop
-
-legend right
-|= Символ | Описание |
-| : | Действие (прямоугольник) |
-endlegend
-
 @enduml

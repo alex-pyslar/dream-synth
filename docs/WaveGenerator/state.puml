@@ -1,7 +1,6 @@
 @startuml StateDiagram
 !define RECTANGLE state
 
-' Настройка стиля для ГОСТ
 skinparam monochrome true
 skinparam shadowing false
 skinparam stateFontSize 12
@@ -19,12 +18,5 @@ title Диаграмма состояний: WaveGeneratorControl
 Обновление : entry / _isUpdating = true
 Обновление : do / Обновить параметры волн
 Обновление : exit / _isUpdating = false
-
-' Легенда
-legend right
-|= Символ | Описание |
-| --> | Переход |
-| : | Описание состояния |
-endlegend
 
 @enduml

@@ -1,6 +1,5 @@
 @startuml ActivityDiagramPlayback
 
-' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
 skinparam monochrome true
 skinparam shadowing false
 skinparam activityFontSize 12
@@ -13,6 +12,7 @@ skinparam defaultCornerRadius 0
 skinparam ArrowColor black
 skinparam ActivityDiamondCornerRadius 0
 skinparam style strictuml
+skinparam roundCorner 0
 
 title Блок-схема алгоритма: Воспроизведение звука
 
@@ -71,12 +71,4 @@ endwhile
 :MidiEditorControl сбрасывает PlaybackLine;
 
 stop
-
-legend right
-|= Символ | Описание |
-| : | Действие или условие (прямоугольник) |
-| if | Ветвление (описано текстом) |
-| while | Цикл |
-endlegend
-
 @enduml

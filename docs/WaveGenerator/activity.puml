@@ -1,6 +1,5 @@
 @startuml ActivityDiagram
 
-' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
 skinparam monochrome true
 skinparam shadowing false
 skinparam activityFontSize 12
@@ -13,6 +12,8 @@ skinparam defaultCornerRadius 0
 skinparam ArrowColor black
 skinparam ActivityDiamondCornerRadius 0
 skinparam style strictuml
+skinparam style default
+skinparam roundCorner 0
 
 title Блок-схема алгоритма: Метод Update
 
@@ -47,12 +48,4 @@ while (Цикл) is (true)
 endwhile
 
 stop
-
-legend right
-|= Символ | Описание |
-| : | Действие или условие (прямоугольник) |
-| while | Цикл |
-| if | Ветвление (описано текстом) |
-endlegend
-
 @enduml

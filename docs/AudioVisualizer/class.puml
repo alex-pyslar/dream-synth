@@ -1,6 +1,5 @@
 @startuml ClassDiagramAudioVisualizer
 
-' ГОСТ-стиль: черно-белый, без теней
 skinparam monochrome true
 skinparam shadowing false
 skinparam classFontSize 12

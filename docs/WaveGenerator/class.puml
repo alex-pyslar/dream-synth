@@ -1,7 +1,6 @@
 @startuml ClassDiagram
 !define RECTANGLE class
 
-' Настройка стиля для соответствия ГОСТ
 skinparam monochrome true
 skinparam shadowing false
 skinparam classFontSize 12
@@ -54,18 +53,9 @@ package "DreamSynth" {
   }
 }
 
-' Связи
 WaveGenerator o--> "3" Wave : содержит
 WaveGenerator --> Equalizer : использует
 WaveGeneratorControl --> WaveGenerator : управляет
 WaveGeneratorControl --> Equalizer : инициализирует
-
-' Легенда
-legend right
-|= Стереотип | Описание |
-| <<class>> | Класс модуля |
-| - | Приватный член |
-| + | Публичный член |
-endlegend
 
 @enduml

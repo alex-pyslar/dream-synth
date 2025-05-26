@@ -1,6 +1,5 @@
 @startuml ActivityDiagramPlaybackTick
 
-' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
 skinparam monochrome true
 skinparam shadowing false
 skinparam activityFontSize 12
@@ -13,6 +12,7 @@ skinparam defaultCornerRadius 0
 skinparam ArrowColor black
 skinparam ActivityDiamondCornerRadius 0
 skinparam style strictuml
+skinparam roundCorner 0
 
 title Блок-схема алгоритма: PlaybackTimer_Tick
 
@@ -48,12 +48,4 @@ else (false)
 endif
 
 stop
-
-legend right
-|= Символ | Описание |
-| : | Действие (прямоугольник) |
-| if | Условие (ромб) |
-| while | Цикл (условие повторения) |
-endlegend
-
 @enduml

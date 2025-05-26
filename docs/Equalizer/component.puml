@@ -1,7 +1,6 @@
 @startuml ComponentDiagram
 !define RECTANGLE component
 
-' Настройка стиля для ГОСТ
 skinparam monochrome true
 skinparam shadowing false
 skinparam componentFontSize 12
@@ -16,16 +15,8 @@ package "DreamSynth" {
   RECTANGLE "[Distortion]" as DIST
 }
 
-' Зависимости
 EQC --> EQ : инициализирует и управляет
 EQ --> BF : использует для фильтрации
 EQ --> DIST : использует для искажения
-
-' Легенда
-legend right
-|= Символ | Описание |
-| [ ] | Компонент |
-| --> | Зависимость |
-endlegend
 
 @enduml

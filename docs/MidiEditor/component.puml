@@ -1,7 +1,6 @@
 @startuml ComponentDiagram
 !define RECTANGLE component
 
-' Настройка стиля для ГОСТ
 skinparam monochrome true
 skinparam shadowing false
 skinparam componentFontSize 12
@@ -16,17 +15,9 @@ package "DreamSynth" {
   RECTANGLE "[WaveGenerator]" as WG
 }
 
-' Зависимости
 MEC --> EQC : управляет звуком нот
 MEC --> EQ : PlayNote -> ProcessSample
 EQC --> EQ : инициализирует и управляет
 EQ --> WG : использует для обработки звука
-
-' Легенда
-legend right
-|= Символ | Описание |
-| [ ] | Компонент |
-| --> | Зависимость |
-endlegend
 
 @enduml

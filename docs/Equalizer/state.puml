@@ -1,6 +1,5 @@
 @startuml StateDiagramEqualizerModulation
 
-' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
 skinparam monochrome true
 skinparam shadowing false
 skinparam stateFontSize 12

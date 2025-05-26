@@ -19,21 +19,18 @@ participant ":ObservableCollection<MidiNote>" as Notes
 participant ":Line" as PlaybackLine
 participant ":DispatcherTimer" as Timer
 
-' Создание ноты
 User -> NoteCanvas: Нажать левую кнопку мыши
 NoteCanvas -> Editor: NoteCanvas_MouseDown(sender, e)
 Editor -> Notes: Добавить новую ноту (Notes.Add(note))
 Editor -> Editor: DrawGrid()
 Editor -> NoteCanvas: Очистить и перерисовать ноты
 
-' Удаление ноты
 User -> NoteCanvas: Нажать среднюю кнопку мыши
 NoteCanvas -> Editor: NoteCanvas_MouseDown(sender, e)
 Editor -> Notes: Удалить ноту (Notes.Remove(note))
 Editor -> Editor: DrawGrid()
 Editor -> NoteCanvas: Очистить и перерисовать ноты
 
-' Воспроизведение
 User -> Editor: StartPlayback()
 Editor -> PlaybackLine: Сбросить позицию (X1, X2 = 0)
 Editor -> Timer: Запустить (Start())

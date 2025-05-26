@@ -1,7 +1,6 @@
 @startuml SequenceDiagram
 !define RECTANGLE participant
 
-' Настройка стиля для ГОСТ
 skinparam monochrome true
 skinparam shadowing false
 skinparam sequenceMessageAlign center
@@ -40,13 +39,5 @@ WGC -> WGC: Task.Delay(MainWindow.interval)
 deactivate WGC
 
 note right: Цикл повторяется
-
-' Легенда
-legend right
-|= Символ | Описание |
-| -> | Синхронный вызов |
-| --> | Асинхронный вызов |
-| alt | Условный блок |
-endlegend
 
 @enduml

@@ -1,6 +1,5 @@
 @startuml SequenceDiagramEqualizerSettings
 
-' ГОСТ-стиль: черно-белый, без теней
 skinparam monochrome true
 skinparam shadowing false
 skinparam participantFontSize 12
