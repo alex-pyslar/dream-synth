@@ -1,6 +1,5 @@
 @startuml ComponentDiagramDreamSynth
 
-' ГОСТ-стиль: черно-белый, без теней
 skinparam monochrome true
 skinparam shadowing false
 skinparam componentFontSize 12
@@ -10,9 +9,7 @@ skinparam componentBackgroundColor none
 skinparam componentBorderColor black
 skinparam ArrowColor black
 
-title Диаграмма компонентов: DreamSynth
-
-package "Приложение DreamSynth" {
+package {
   [Графический интерфейс] #..# [WPF] : Рендеринг интерфейса
   [Графический интерфейс] #..# [NAudio] : Аудиовывод
   [Графический интерфейс] --> [Редактор нот] : Управление MIDI-нотами

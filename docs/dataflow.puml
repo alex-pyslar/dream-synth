@@ -1,6 +1,5 @@
 @startuml DataflowDiagramDreamSynth
 
-' ГОСТ-стиль: черно-белый, без теней
 skinparam monochrome true
 skinparam shadowing false
 skinparam nodeFontSize 12
@@ -9,8 +8,6 @@ skinparam nodeBorderThickness 1
 skinparam nodeBackgroundColor none
 skinparam nodeBorderColor black
 skinparam ArrowColor black
-
-title Диаграмма потоков данных: DreamSynth
 
 entity "Пользователь" as Пользователь
 entity "Графический интерфейс" as GUI

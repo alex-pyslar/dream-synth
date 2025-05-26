@@ -15,8 +15,6 @@ skinparam style strictuml
 skinparam defaultTextAlignment center
 skinparam roundCorner 0
 
-title Блок-схема алгоритма: ProcessSample
-
 start
 
 :Получить входной sample;

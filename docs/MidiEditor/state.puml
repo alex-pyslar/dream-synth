@@ -12,8 +12,6 @@ skinparam defaultCornerRadius 0
 skinparam ArrowColor black
 skinparam style strictuml
 
-title Диаграмма состояний: MidiEditorControl
-
 [*] --> PlaybackStopped
 
 PlaybackStopped --> PlaybackRunning : StartPlayback()\n[playbackTimer.Start()]

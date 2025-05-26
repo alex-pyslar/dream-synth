@@ -1,6 +1,5 @@
 @startuml ClassDiagramDreamSynth
 
-' ГОСТ-стиль: черно-белый, без теней
 skinparam monochrome true
 skinparam shadowing false
 skinparam classFontSize 12
@@ -11,8 +10,6 @@ skinparam classBorderColor black
 skinparam ArrowColor black
 skinparam packageStyle rectangle
 skinparam classAttributeIconSize 0
-
-title Диаграмма классов: DreamSynth
 
 package "DreamSynth" {
 

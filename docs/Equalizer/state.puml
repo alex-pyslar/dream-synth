@@ -12,8 +12,6 @@ skinparam defaultCornerRadius 0
 skinparam ArrowColor black
 skinparam style strictuml
 
-title Диаграмма состояний: Режимы эквалайзера
-
 [*] --> StaticMode
 
 StaticMode --> ModulationMode : ModulationToggle.Checked\n[UpdateFilters(true)]

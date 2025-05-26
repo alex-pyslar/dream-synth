@@ -1,6 +1,5 @@
 @startuml UsecaseDiagramDreamSynth
 
-' ГОСТ-стиль: черно-белый, без теней
 skinparam monochrome true
 skinparam shadowing false
 skinparam usecaseFontSize 12
@@ -9,8 +8,6 @@ skinparam usecaseBorderThickness 1
 skinparam usecaseBackgroundColor none
 skinparam usecaseBorderColor black
 skinparam ArrowColor black
-
-title Диаграмма вариантов использования: DreamSynth
 
 actor "Композитор" as Composer
 actor "Звукорежиссер" as SoundEngineer

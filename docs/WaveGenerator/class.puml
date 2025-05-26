@@ -10,8 +10,6 @@ skinparam packageStyle rectangle
 skinparam stereotypeCBackgroundColor none
 skinparam stereotypeCBorderColor black
 
-title Диаграмма классов
-
 package "DreamSynth" {
   RECTANGLE Wave {
     -Type: WaveType

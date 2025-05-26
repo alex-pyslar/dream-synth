@@ -9,8 +9,6 @@ skinparam participantBackgroundColor none
 skinparam participantBorderColor black
 skinparam ArrowColor black
 
-title Диаграмма последовательности: Изменение параметров эквалайзера
-
 actor User
 participant ":Slider" as Slider
 participant ":EqualizerControl" as Control

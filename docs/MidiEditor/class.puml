@@ -9,8 +9,6 @@ skinparam classBackgroundColor none
 skinparam classBorderColor black
 skinparam ArrowColor black
 
-title Диаграмма классов: MidiEditorControl
-
 class MidiEditorControl {
   -Notes: ObservableCollection<MidiNote>
   -SelectedNote: MidiNote

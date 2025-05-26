@@ -14,8 +14,6 @@ skinparam ActivityDiamondCornerRadius 0
 skinparam style strictuml
 skinparam roundCorner 0
 
-title Блок-схема алгоритма: Воспроизведение звука
-
 start
 
 :Пользователь нажимает кнопку Play;

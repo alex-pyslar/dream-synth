@@ -6,9 +6,7 @@ skinparam shadowing false
 skinparam componentFontSize 12
 skinparam componentFontName Arial
 
-title Диаграмма компонентов
-
-package "DreamSynth" {
+package {
   RECTANGLE "[AudioVisualizer]" as AV
 }
 

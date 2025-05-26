@@ -8,8 +8,6 @@ skinparam sequenceArrowFontSize 10
 skinparam sequenceParticipantFontSize 12
 skinparam sequenceParticipantFontName Arial
 
-title Диаграмма последовательности: Обновление волн
-
 RECTANGLE ":WaveGeneratorControl" as WGC
 RECTANGLE ":WaveGenerator" as WG
 RECTANGLE ":Wave" as W

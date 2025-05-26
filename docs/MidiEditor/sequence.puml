@@ -1,6 +1,5 @@
 @startuml SequenceDiagramMidiEditor
 
-' ГОСТ-стиль: черно-белый, без теней
 skinparam monochrome true
 skinparam shadowing false
 skinparam participantFontSize 12
@@ -9,8 +8,6 @@ skinparam participantBorderThickness 1
 skinparam participantBackgroundColor none
 skinparam participantBorderColor black
 skinparam ArrowColor black
-
-title Диаграмма последовательности: Взаимодействие с MidiEditorControl
 
 actor User
 participant ":MidiEditorControl" as Editor

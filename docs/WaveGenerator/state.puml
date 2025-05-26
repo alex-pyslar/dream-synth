@@ -6,8 +6,6 @@ skinparam shadowing false
 skinparam stateFontSize 12
 skinparam stateFontName Arial
 
-title Диаграмма состояний: WaveGeneratorControl
-
 [*] --> Инициализация
 Инициализация: Создание компонентов UI
 Инициализация --> Ожидание : InitializeWaveGenerator()

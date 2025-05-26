@@ -1,6 +1,5 @@
 @startuml StateDiagramPlayback
 
-' ГОСТ-стиль: черно-белый, без теней, прямоугольные блоки
 skinparam monochrome true
 skinparam shadowing false
 skinparam stateFontSize 12
@@ -12,8 +11,6 @@ skinparam stateCornerRadius 0
 skinparam defaultCornerRadius 0
 skinparam ArrowColor black
 skinparam style strictuml
-
-title Диаграмма состояний: Воспроизведение DreamSynth
 
 [*] --> Idle
 
