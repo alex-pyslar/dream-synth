@@ -1,0 +1,111 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.2.2 Chrome/134.0.6998.178 Electron/35.1.2 Safari/537.36" version="26.2.2">
+  <diagram name="Page-1" id="F3DpyBi2ULReHoK88Xex">
+    <mxGraphModel dx="1428" dy="841" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-1" value="Генератор звуковых сигналов" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="350" y="410" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-2" value="Редактор нот" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="350" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-3" value="Визуализатор сигнала" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="100" y="410" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-4" value="Модуль звуковых эффектов" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="350" y="530" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-11" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="BVWz1LS-s-Ho_6SvjUxC-2" target="BVWz1LS-s-Ho_6SvjUxC-1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="430" as="sourcePoint" />
+            <mxPoint x="480" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-12" value="Передача данных нот" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="BVWz1LS-s-Ho_6SvjUxC-11" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-15" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="BVWz1LS-s-Ho_6SvjUxC-1" target="BVWz1LS-s-Ho_6SvjUxC-4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="370" y="440" as="sourcePoint" />
+            <mxPoint x="470" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-16" value="Сигнал" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="BVWz1LS-s-Ho_6SvjUxC-15" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-17" value="Устройство вывода" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="350" y="660" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-18" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="BVWz1LS-s-Ho_6SvjUxC-4" target="BVWz1LS-s-Ho_6SvjUxC-17" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="370" y="440" as="sourcePoint" />
+            <mxPoint x="470" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-19" value="Обработанный сигнал" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="BVWz1LS-s-Ho_6SvjUxC-18" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-22" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="BVWz1LS-s-Ho_6SvjUxC-1" target="BVWz1LS-s-Ho_6SvjUxC-3" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="660" y="360" as="sourcePoint" />
+            <mxPoint x="760" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-23" value="Сигнал" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="BVWz1LS-s-Ho_6SvjUxC-22" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-24" value="Графический интерфейс" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="630" y="410" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-31" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="BVWz1LS-s-Ho_6SvjUxC-24" target="BVWz1LS-s-Ho_6SvjUxC-1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="520" y="590" as="sourcePoint" />
+            <mxPoint x="620" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-32" value="Настройки параметров" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="BVWz1LS-s-Ho_6SvjUxC-31" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-34" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="BVWz1LS-s-Ho_6SvjUxC-24" target="BVWz1LS-s-Ho_6SvjUxC-4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="640" y="450" as="sourcePoint" />
+            <mxPoint x="480" y="450" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="690" y="560" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-35" value="Настройки параметров" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="BVWz1LS-s-Ho_6SvjUxC-34" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-36" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="BVWz1LS-s-Ho_6SvjUxC-24" target="BVWz1LS-s-Ho_6SvjUxC-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="480" as="sourcePoint" />
+            <mxPoint x="480" y="570" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="690" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="BVWz1LS-s-Ho_6SvjUxC-37" value="Изменение нот" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="BVWz1LS-s-Ho_6SvjUxC-36" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="VDUsWRto7AN1hxd2fKGF-2" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="BVWz1LS-s-Ho_6SvjUxC-3" target="BVWz1LS-s-Ho_6SvjUxC-24">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="430" as="sourcePoint" />
+            <mxPoint x="480" y="430" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="160" y="230" />
+              <mxPoint x="790" y="230" />
+              <mxPoint x="790" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VDUsWRto7AN1hxd2fKGF-3" value="Графики сигналов" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="VDUsWRto7AN1hxd2fKGF-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,44 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam activityFontSize 12
+skinparam activityFontName Arial
+skinparam activityBorderThickness 1
+skinparam activityBackgroundColor none
+skinparam activityBorderColor black
+skinparam activityCornerRadius 0
+skinparam defaultCornerRadius 0
+skinparam ArrowColor black
+skinparam ActivityDiamondCornerRadius 0
+skinparam style strictuml
+skinparam roundCorner 0
+
+start
+
+:Инициализация модуля эффектов;
+:Создание фильтров (низкие, средние, высокие частоты);
+:Создание модуля перегрузки;
+
+:Получение параметров эквалайзера;
+:Установка усиления для низких частот;
+:Установка усиления для средних частот;
+:Установка усиления для высоких частот;
+:Установка уровня перегрузки;
+
+:Обновление настроек фильтров;
+:Настройка низкочастотного фильтра;
+:Настройка среднечастотного фильтра;
+:Настройка высокочастотного фильтра;
+:Учёт состояния модуляции;
+
+:Обработка аудиосэмпла;
+:Применение низкочастотного фильтра;
+:Применение среднечастотного фильтра;
+:Применение высокочастотного фильтра;
+:Применение перегрузки;
+
+:Вывод обработанного сигнала;
+
+stop
+
+@enduml

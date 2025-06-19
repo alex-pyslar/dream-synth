@@ -1,0 +1,62 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam activityFontSize 12
+skinparam activityFontName Arial
+skinparam activityBorderThickness 1
+skinparam activityBackgroundColor none
+skinparam activityBorderColor black
+skinparam activityCornerRadius 0
+skinparam defaultCornerRadius 0
+skinparam ArrowColor black
+skinparam ActivityDiamondCornerRadius 0
+skinparam style strictuml
+skinparam roundCorner 0
+
+start
+
+:Инициализация редактора;
+
+:Отрисовка сетки;
+
+:Обработка действий пользователя;
+
+if (Клик мыши?) then (да)
+    if (Левая кнопка?) then (да)
+        :Создание новой ноты;
+    else (нет)
+        if (Средняя кнопка?) then (да)
+            :Удаление ноты;
+        else (нет)
+            if (Правая кнопка?) then (да)
+                :Изменение размера ноты;
+            endif
+        endif
+    endif
+else (нет)
+    if (Перетаскивание?) then (да)
+        :Перемещение ноты;
+    endif
+endif
+
+:Обновление отображения;
+
+if (Воспроизведение активно?) then (да)
+    :Обновление позиции линии воспроизведения;
+
+    :Проверка активных нот;
+
+    if (Нота в зоне воспроизведения?) then (да)
+        :Воспроизведение ноты;
+    else (нет)
+        :Остановка ноты;
+    endif
+else (нет)
+    :Ожидание команды воспроизведения;
+endif
+
+:Обновление длительности последовательности;
+
+stop
+
+@enduml

@@ -1,28 +1,49 @@
 @startuml ComponentDiagramDreamSynth
-
 skinparam monochrome true
 skinparam shadowing false
-skinparam componentFontSize 12
-skinparam componentFontName Arial
-skinparam componentBorderThickness 1
-skinparam componentBackgroundColor none
-skinparam componentBorderColor black
+skinparam defaultTextAlignment center
 skinparam ArrowColor black
+skinparam linetype ortho
 
-package {
-  [Графический интерфейс] #..# [WPF] : Рендеринг интерфейса
-  [Графический интерфейс] #..# [NAudio] : Аудиовывод
-  [Графический интерфейс] --> [Редактор нот] : Управление MIDI-нотами
-  [Графический интерфейс] --> [Генератор сигналов] : Настройка волн
-  [Графический интерфейс] --> [Эквалайзер] : Настройка фильтров
-  [Графический интерфейс] --> [Визуализатор спектра] : Отображение сигналов
-  [Редактор нот] --> [MIDI-нота] : Создание/редактирование нот
-  [Редактор нот] --> [Генератор сигналов] : Передача MIDI-данных
-  [Генератор сигналов] --> [Волна] : Генерация аудиосигналов
-  [Генератор сигналов] --> [Эквалайзер] : Применение фильтров и искажений
-  [Генератор сигналов] --> [Визуализатор спектра] : Передача аудиосэмплов
-  [Визуализатор спектра] #..# [OxyPlot] : Построение графиков
-  [Визуализатор спектра] #..# [MathNet.Numerics] : Вычисление FFT
+' Интерфейс
+rectangle "Графический\nинтерфейс" as UI {
 }
+
+' Библиотеки интерфейса
+rectangle "WPF" as WPF
+rectangle "NAudio" as NAudio
+
+' Редактор нот
+rectangle "Редактор нот" as NoteEditor
+rectangle "Нота" as MIDINote
+
+' Генерация аудио
+rectangle "Генератор\nсигналов" as Synth
+rectangle "Волна" as Wave
+rectangle "Эквалайзер" as EQ
+
+' Визуализация
+rectangle "Визуализатор\nспектра" as Visualizer
+rectangle "OxyPlot" as OxyPlot
+rectangle "MathNet.\nNumerics" as MathNet
+
+' Связи — горизонтальные и вертикальные
+UI -[hidden]-> NoteEditor
+UI -down-> NoteEditor : Управление\nнотами
+UI -down-> Synth : Настройка волн
+UI -down-> EQ : Настройка фильтров
+UI -down-> Visualizer : Отображение сигналов
+UI -right-> WPF : Рендеринг интерфейса
+UI -right-> NAudio : ""
+
+NoteEditor -down-> MIDINote : Создание/редактирование
+NoteEditor -down-> Synth : Передача данных нот
+
+Synth -down-> Wave : Генерация\nаудиосигналов
+Synth -down-> EQ : Фильтры и искажения
+Synth -down-> Visualizer : Аудиосэмплы
+
+Visualizer -right-> OxyPlot : Построение графиков
+Visualizer -right-> MathNet : FFT
 
 @enduml

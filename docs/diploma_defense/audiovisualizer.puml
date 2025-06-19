@@ -1,0 +1,43 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam activityFontSize 12
+skinparam activityFontName Arial
+skinparam activityBorderThickness 1
+skinparam activityBackgroundColor none
+skinparam activityBorderColor black
+skinparam activityCornerRadius 0
+skinparam defaultCornerRadius 0
+skinparam ArrowColor black
+skinparam ActivityDiamondCornerRadius 0
+skinparam style strictuml
+skinparam roundCorner 0
+
+start
+
+:Инициализация визуализатора;
+:Создание моделей графиков для временного сигнала и частотного спектра;
+
+:Получение аудиосэмплов;
+:Применение модуляции;
+:Применение искажения;
+
+:Обработка временного сигнала;
+:Очистка и заполнение графика временного сигнала;
+:Расчёт времени и амплитуды сэмплов;
+:Настройка осей графика (время, амплитуда);
+:Обновление графика временного сигнала;
+
+:Обработка частотного спектра;
+:Преобразование данных в комплексные числа;
+:Выполнение быстрого преобразования Фурье (FFT);
+:Очистка и заполнение графика частотного спектра;
+:Расчёт частот и амплитуд в децибелах;
+:Настройка осей графика (частота, амплитуда в дБ);
+:Обновление графика частотного спектра;
+
+:Отображение графиков;
+
+stop
+
+@enduml

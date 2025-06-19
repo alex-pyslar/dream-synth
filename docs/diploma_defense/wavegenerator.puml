@@ -1,0 +1,44 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam activityFontSize 12
+skinparam activityFontName Arial
+skinparam activityBorderThickness 1
+skinparam activityBackgroundColor none
+skinparam activityBorderColor black
+skinparam activityCornerRadius 0
+skinparam defaultCornerRadius 0
+skinparam ArrowColor black
+skinparam ActivityDiamondCornerRadius 0
+skinparam style strictuml
+skinparam roundCorner 0
+
+start
+
+:Инициализация генератора сигналов;
+
+:Получение параметров сигналов;
+
+:Чтение нот;
+
+if (Есть активные ноты?) then (да)
+    :Обновление параметров волн;
+else (нет)
+    :Установка нулевых параметров;
+endif
+
+:Генерация сигналов;
+
+if (Модуляция включена?) then (да)
+    :Применение модуляции;
+else (нет)
+    :Комбинирование сигналов;
+endif
+
+:Применение эквализации и перегрузки;
+
+:Вывод сигнала;
+
+stop
+
+@enduml
